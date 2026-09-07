@@ -136,20 +136,26 @@ export class ProductsService {
       if (terms.length === 0) return undefined;
 
       const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
       const nameFields = ['name', 'nameFr', 'nameEn', 'nameSw'];
-      const regexOne = (paramIdx: number) =>
-        nameFields.map(f => `COALESCE("${f}", '') ~* $${paramIdx}`).join(' OR ');
-
-      // WHERE : chaque terme doit apparaître dans au moins un champ de nom (et non la description)
-      const conditions = terms.map((_, i) => `(${regexOne(i + 1)})`);
+      
+      const params: string[] = [];
+      
+      const conditions = terms.map(term => {
+        const escaped = `\\m${escapeRegex(term)}`;
+        const fieldConds = nameFields.map(f => {
+          params.push(escaped);
+          return `COALESCE("${f}", '') ~* $${params.length}`;
+        });
+        return `(${fieldConds.join(' OR ')})`;
+      });
       const joinedConditions = conditions.join(' AND ');
 
-      // Rang : phrase exacte dans "name" > tous les termes dans "name" > match partiel du nom
-      const nameOnlyConditions = terms.map((_, i) => `COALESCE("name", '') ~* $${i + 1}`);
+      const nameOnlyConditions = terms.map(term => {
+        params.push(`\\m${escapeRegex(term)}`);
+        return `COALESCE("name", '') ~* $${params.length}`;
+      });
       const joinedNameConditions = nameOnlyConditions.join(' AND ');
 
-      const params: string[] = terms.map(term => `\\m${escapeRegex(term)}`);
       params.push(`\\m${escapeRegex(search.trim())}`);
       const exactMatchParam = params.length;
 
