@@ -80,19 +80,23 @@ export class ProductsService {
       const terms = search.trim().split(/\s+/).filter(t => t.length > 0);
       if (terms.length === 0) return undefined;
 
-      const conditions = terms.map((_, i) => `("name" ILIKE $${(i * 2) + 1} OR "description" ILIKE $${(i * 2) + 2})`);
+      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      const conditions = terms.map((_, i) => `("name" ~* $${(i * 2) + 1} OR "description" ~* $${(i * 2) + 2})`);
       const joinedConditions = conditions.join(' AND ');
       
-      const nameConditions = terms.map((_, i) => `"name" ILIKE $${(i * 2) + 1}`);
+      const nameConditions = terms.map((_, i) => `"name" ~* $${(i * 2) + 1}`);
       const joinedNameConditions = nameConditions.join(' AND ');
       
       const params: string[] = [];
       terms.forEach(term => {
-        params.push(`%${term}%`);
-        params.push(`%${term}%`);
+        const escaped = `\\m${escapeRegex(term)}`;
+        params.push(escaped);
+        params.push(escaped);
       });
 
-      params.push(`%${search.trim()}%`);
+      const escapedSearch = `\\m${escapeRegex(search.trim())}`;
+      params.push(escapedSearch);
       const exactMatchParam = params.length;
 
       const queryString = `
@@ -101,7 +105,7 @@ export class ProductsService {
         AND ${joinedConditions}
         ORDER BY 
           CASE 
-            WHEN "name" ILIKE $${exactMatchParam} THEN 2
+            WHEN "name" ~* $${exactMatchParam} THEN 2
             WHEN ${joinedNameConditions} THEN 1 
             ELSE 0 
           END DESC,
@@ -131,20 +135,22 @@ export class ProductsService {
       const terms = search.trim().split(/\s+/).filter(t => t.length > 0);
       if (terms.length === 0) return undefined;
 
+      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
       const nameFields = ['name', 'nameFr', 'nameEn', 'nameSw'];
-      const ilikeOne = (paramIdx: number) =>
-        nameFields.map(f => `COALESCE("${f}", '') ILIKE $${paramIdx}`).join(' OR ');
+      const regexOne = (paramIdx: number) =>
+        nameFields.map(f => `COALESCE("${f}", '') ~* $${paramIdx}`).join(' OR ');
 
       // WHERE : chaque terme doit apparaître dans au moins un champ de nom (et non la description)
-      const conditions = terms.map((_, i) => `(${ilikeOne(i + 1)})`);
+      const conditions = terms.map((_, i) => `(${regexOne(i + 1)})`);
       const joinedConditions = conditions.join(' AND ');
 
       // Rang : phrase exacte dans "name" > tous les termes dans "name" > match partiel du nom
-      const nameOnlyConditions = terms.map((_, i) => `COALESCE("name", '') ILIKE $${i + 1}`);
+      const nameOnlyConditions = terms.map((_, i) => `COALESCE("name", '') ~* $${i + 1}`);
       const joinedNameConditions = nameOnlyConditions.join(' AND ');
 
-      const params: string[] = terms.map(term => `%${term}%`);
-      params.push(`%${search.trim()}%`);
+      const params: string[] = terms.map(term => `\\m${escapeRegex(term)}`);
+      params.push(`\\m${escapeRegex(search.trim())}`);
       const exactMatchParam = params.length;
 
       const queryString = `
@@ -153,7 +159,7 @@ export class ProductsService {
         AND ${joinedConditions}
         ORDER BY
           CASE
-            WHEN "name" ILIKE $${exactMatchParam} THEN 2
+            WHEN "name" ~* $${exactMatchParam} THEN 2
             WHEN ${joinedNameConditions} THEN 1
             ELSE 0
           END DESC,

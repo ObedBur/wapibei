@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Category, ProductFilters } from '../types';
+import { useT } from '@/i18n/useT';
 
 interface SidebarProps {
   categories: Category[];
@@ -10,6 +11,7 @@ interface SidebarProps {
 }
 
 export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filters, onUpdate }) => {
+  const { t } = useT();
   const [minPrice, setMinPrice] = useState<string>(filters.minPrice || '');
   const [maxPrice, setMaxPrice] = useState<string>(filters.maxPrice || '');
   const [searchQuery, setSearchQuery] = useState<string>(filters.search || '');
@@ -23,20 +25,22 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
   };
 
   const handleCategoryClick = (categoryId: string | null) => {
-    // On regroupe la recherche en attente avec la catégorie dans un seul push URL
-    // pour éviter que le clic écrase la recherche commitée par le blur de l'input.
-    onUpdate({ categoryId, page: 1, search: searchQuery || null });
+    if (filters.categoryId === categoryId) {
+      onUpdate({ categoryId: null, page: 1 });
+    } else {
+      onUpdate({ categoryId, page: 1 });
+    }
   };
 
   return (
     <aside className="hidden md:block w-[240px] lg:w-[280px] shrink-0 sticky top-24 self-start">
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-slate-100 dark:border-white/5 p-6 shadow-sm">
-        <h2 className="text-[17px] font-extrabold text-slate-800 dark:text-white mb-6">Filtres</h2>
+        <h2 className="text-[17px] font-extrabold text-slate-800 dark:text-white mb-6">{t('products.sidebar.filters')}</h2>
         
         {/* Recherche */}
         <div className="mb-7">
           <h3 className="text-[13px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
-            Rechercher
+            {t('products.sidebar.search')}
           </h3>
           <div className="flex border border-slate-200 dark:border-white/5 rounded-xl overflow-hidden focus-within:border-[#E67E22] focus-within:ring-1 focus-within:ring-[#E67E22] transition-all bg-slate-50 dark:bg-white/5">
               <div className="px-2.5 flex items-center justify-center">
@@ -44,12 +48,12 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
               </div>
               <input
                 type="text"
-                placeholder="Rechercher un produit..."
+                placeholder={t('products.sidebar.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onBlur={() => onUpdate({ search: searchQuery || null })}
                 onKeyDown={(e) => e.key === 'Enter' && onUpdate({ search: searchQuery || null })}
-                aria-label="Rechercher un produit"
+                aria-label={t('products.sidebar.searchPlaceholder')}
                 className="w-full pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent"
               />
             </div>
@@ -58,7 +62,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
         {/* Catégories */}
         <div className="mb-7">
           <h3 className="text-[13px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
-            Catégories
+            {t('products.sidebar.categories')}
           </h3>
           <div className="space-y-1.5">
             {/* Option "Toutes" */}
@@ -70,7 +74,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'
               }`}
             >
-              <span>Toutes les catégories</span>
+              <span>{t('products.sidebar.allCategories')}</span>
             </button>
 
             {categories.map((cat) => (
@@ -83,7 +87,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
                     : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'
                 }`}
               >
-                <span>{cat.name}</span>
+                <span>{t(`category.${cat.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`)}</span>
                 {cat.productCount !== undefined && (
                   <span
                     className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${
@@ -106,12 +110,12 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
         {/* Budget / Prix */}
         <div>
           <h3 className="text-[13px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
-            Budget ($)
+            {t('products.sidebar.budget')}
           </h3>
           <div className="flex gap-2 items-center">
             <div className="flex-1 flex border border-slate-200 dark:border-white/10 rounded-xl overflow-hidden focus-within:border-[#E67E22] focus-within:ring-1 focus-within:ring-[#E67E22] transition-all bg-slate-50 dark:bg-white/5">
               <div className="px-2.5 flex items-center justify-center">
-                <span className="text-slate-400 font-bold text-sm">Min</span>
+                <span className="text-slate-400 font-bold text-sm">{t('products.sidebar.min')}</span>
               </div>
               <input
                 type="number"
@@ -120,7 +124,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
                 onChange={(e) => setMinPrice(e.target.value)}
                 onBlur={handleMinPriceCommit}
                 onKeyDown={(e) => e.key === 'Enter' && handleMinPriceCommit()}
-                aria-label="Prix minimum"
+                aria-label={t('products.sidebar.min')}
                 className="w-full pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent border-l border-slate-200 dark:border-white/10"
                 min="0"
               />
@@ -128,7 +132,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
             <span className="text-slate-300 font-bold">—</span>
             <div className="flex-1 flex border border-slate-200 dark:border-white/10 rounded-xl overflow-hidden focus-within:border-[#E67E22] focus-within:ring-1 focus-within:ring-[#E67E22] transition-all bg-slate-50 dark:bg-white/5">
               <div className="px-2.5 flex items-center justify-center">
-                <span className="text-slate-400 font-bold text-sm">Max</span>
+                <span className="text-slate-400 font-bold text-sm">{t('products.sidebar.max')}</span>
               </div>
               <input
                 type="number"
@@ -137,7 +141,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
                 onChange={(e) => setMaxPrice(e.target.value)}
                 onBlur={handleMaxPriceCommit}
                 onKeyDown={(e) => e.key === 'Enter' && handleMaxPriceCommit()}
-                aria-label="Prix maximum"
+                aria-label={t('products.sidebar.max')}
                 className="w-full pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent border-l border-slate-200 dark:border-white/10"
                 min="0"
               />
@@ -156,7 +160,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
               className="mt-4 w-full text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-[#E67E22] transition-colors duration-200 flex items-center justify-center gap-1.5"
             >
               <span className="material-symbols-outlined text-[14px]">restart_alt</span>
-              Réinitialiser les filtres
+              {t('products.sidebar.reset')}
             </button>
           )}
         </div>

@@ -38,13 +38,6 @@ interface MobileSidebarProps {
   onLogout: () => void;
 }
 
-const NAV_ITEMS = [
-  { id: '/',         label: 'Accueil',  Icon: Home,        vendor: true,  client: true },
-  { id: '/products', label: 'Produits', Icon: ShoppingBag, vendor: true,  client: true },
-  { id: '/sellers',  label: 'Vendeurs', Icon: Store,       vendor: false, client: true },
-  { id: '/compare',  label: 'Comparer', Icon: Scale,       vendor: true,  client: true },
-];
-
 const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
   isOpen,
   onClose,
@@ -69,7 +62,13 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
     name?.split(' ').map((n) => n[0]).join('').toUpperCase().substring(0, 2) || 'U';
 
   const isVendor = user?.role === 'VENDOR';
-  const navItems = NAV_ITEMS.filter((item) => (isVendor ? item.vendor : item.client));
+
+  const navItems = [
+    { id: '/',         label: t(''),    Icon: Home,        vendor: true,  client: true },
+    { id: '/products', label: t(''), Icon: ShoppingBag, vendor: true,  client: true },
+    { id: '/sellers',  label: t(''),  Icon: Store,       vendor: false, client: true },
+    { id: '/compare',  label: t(''),  Icon: Scale,       vendor: true,  client: true },
+  ].filter((item) => (isVendor ? item.vendor : item.client));
 
   const sidebarContent = (
     <div
@@ -102,14 +101,14 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
             <div className="flex items-start justify-between mb-8">
               <div>
                 <span className="text-xl font-black text-[#0F172A] dark:text-white uppercase tracking-wider">
-                  MENU
+                  {t('')}
                 </span>
                 <div className="h-1 w-8 bg-[#E67E22] rounded-full mt-1.5" />
               </div>
 
               <button
                 onClick={onClose}
-                aria-label="Fermer le menu"
+                aria-label={t('')}
                 className="size-10 flex items-center justify-center rounded-full bg-[#F1F5F9] dark:bg-white/10 text-[#0F172A] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
               >
                 <X size={20} strokeWidth={2.5} />
@@ -154,8 +153,8 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-bold text-white">Se connecter</p>
-                  <p className="text-[11px] text-white/60 mt-0.5 truncate">Accédez à votre compte</p>
+                  <p className="text-[15px] font-bold text-white">{t('')}</p>
+                  <p className="text-[11px] text-white/60 mt-0.5 truncate">{t('')}</p>
                 </div>
 
                 <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-[#E67E22] transition-colors">
@@ -170,7 +169,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
             <div className="flex items-center gap-3 mb-5">
               <LayoutGrid size={15} className="text-[#94A3B8]" strokeWidth={2.5} />
               <span className="text-[11px] font-black text-[#64748B] dark:text-gray-400 uppercase tracking-widest shrink-0">
-                NAVIGATION PRINCIPALE
+                {t('')}
               </span>
               <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
             </div>
@@ -222,7 +221,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                 <div className="flex items-center gap-3 mb-5">
                   <GripHorizontal size={15} className="text-[#94A3B8]" strokeWidth={2.5} />
                   <span className="text-[11px] font-black text-[#64748B] dark:text-gray-400 uppercase tracking-widest shrink-0">
-                    {isVendor ? 'ESPACE VENDEUR' : 'ESPACE CLIENT'}
+                    {isVendor ? t('') : t('')}
                   </span>
                   <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
                 </div>

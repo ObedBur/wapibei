@@ -57,12 +57,12 @@ export const Newsletter = () => {
                 <input
                   type="email"
                   disabled
-                  placeholder="Newsletter (Bientôt disponible)"
+                  placeholder={t('home.newsletter.emailPlaceholder')}
                   className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-full py-4 pl-6 pr-6 cursor-not-allowed transition-all text-sm"
                 />
               </div>
               <p className="text-center md:text-left text-xs text-slate-500 dark:text-slate-400 pl-2">
-                Nous préparons un nouveau système de newsletter. Restez à l'écoute !
+                {t('home.newsletter.comingSoonMsg')}
               </p>
             </div>
           </div>

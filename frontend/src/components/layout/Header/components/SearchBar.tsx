@@ -108,13 +108,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ isSearchExpanded, setIsSea
                 key={i}
                 type="button"
                 onClick={() => handleSearch(undefined, s.text)}
-                className="w-full flex items-center justify-between px-5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b last:border-0 border-gray-50 dark:border-white/5 text-left"
+                className="w-full flex items-center justify-between gap-2 px-5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b last:border-0 border-gray-50 dark:border-white/5 text-left overflow-hidden"
               >
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-gray-400 text-[18px]">history</span>
-                  <span className="text-[13px] md:text-sm font-medium text-gray-700 dark:text-gray-200">{s.text}</span>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <span className="material-symbols-outlined text-gray-400 text-[18px] shrink-0">history</span>
+                  <span className="text-[13px] md:text-sm font-medium text-gray-700 dark:text-gray-200 truncate block">{s.text}</span>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary/60 bg-primary/5 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary/60 bg-primary/5 px-2 py-0.5 rounded shrink-0">
                   {s.category}
                 </span>
               </button>

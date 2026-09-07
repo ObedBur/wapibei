@@ -216,9 +216,10 @@ export const GlobalSearch = () => {
 
           <button 
             type="submit"
-            className="h-8 sm:h-10 px-4 sm:px-6 mr-1 bg-[#E67E22] text-white text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-full shadow-lg shadow-[#E67E22]/20 hover:scale-105 active:scale-95 transition-all shrink-0"
+            className="h-8 sm:h-10 px-4 sm:px-6 mr-1 flex items-center justify-center bg-[#E67E22] text-white rounded-full shadow-lg shadow-[#E67E22]/20 hover:scale-105 active:scale-95 transition-all shrink-0"
+            aria-label={t('search.placeholder')}
           >
-            Go
+            <Search className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </form>
       </div>
@@ -312,10 +313,10 @@ export const GlobalSearch = () => {
                         <button
                           key={i}
                           onClick={() => handleSuggestionClick(sug)}
-                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 text-left transition-colors group"
+                          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 text-left transition-colors group overflow-hidden"
                         >
-                          <Search className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#E67E22]" />
-                          <span className="text-xs font-bold text-gray-700 dark:text-gray-200 group-hover:text-[#E67E22]">
+                          <Search className="w-3.5 h-3.5 shrink-0 text-gray-400 group-hover:text-[#E67E22]" />
+                          <span className="text-xs font-bold text-gray-700 dark:text-gray-200 group-hover:text-[#E67E22] truncate block">
                             {sug}
                           </span>
                         </button>

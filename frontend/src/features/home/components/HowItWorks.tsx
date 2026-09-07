@@ -4,8 +4,7 @@ import { useT } from "@/i18n/useT";
 export const HowItWorks = ({ steps = [] }: { steps: any[] }) => {
   const { t } = useT();
 
-  // Fallback si la DB est vide
-  const displaySteps = steps?.length > 0 ? steps : [
+  const displaySteps = [
     { title: t('home.howItWorks.steps.step1Title'), description: t('home.howItWorks.steps.step1Desc') },
     { title: t('home.howItWorks.steps.step2Title'), description: t('home.howItWorks.steps.step2Desc') },
     { title: t('home.howItWorks.steps.step3Title'), description: t('home.howItWorks.steps.step3Desc') },

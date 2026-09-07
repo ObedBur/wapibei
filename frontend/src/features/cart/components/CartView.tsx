@@ -13,8 +13,10 @@ import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/axios";
 import { ProductMapper } from "@/features/products/services/product.mapper";
 import { getProductImageUrl } from "@/lib/image-utils";
+import { useT } from "@/i18n/useT";
 
 export const CartView: React.FC = () => {
+  const { t } = useT();
   const {
     items,
     subtotal,
@@ -49,7 +51,7 @@ export const CartView: React.FC = () => {
       router.push("/cart/success");
     } catch (error) {
       console.error("Checkout failed:", error);
-      showToast("Commande impossible. Vérifiez le stock ou réessayez.", "error");
+      showToast(t('cart.checkoutError'), "error");
     }
   };
 
@@ -70,14 +72,13 @@ export const CartView: React.FC = () => {
           </span>
         </div>
         <h2 className="text-2xl md:text-4xl font-black text-deep-blue dark:text-white mb-4">
-          Votre panier est vide
+          {t('cart.emptyTitle')}
         </h2>
         <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm">
-          Découvrez nos meilleurs prix en Afrique et commencez votre shopping
-          local dès maintenant.
+          {t('cart.emptyDesc')}
         </p>
         <Link href="/products">
-          <Button size="lg">Voir les produits</Button>
+          <Button size="lg">{t('cart.viewProducts')}</Button>
         </Link>
       </div>
     );
@@ -88,15 +89,15 @@ export const CartView: React.FC = () => {
       <div className="bg-[#FDFBF7] dark:bg-zinc-900 rounded-2xl sm:rounded-[2rem] md:rounded-[3rem] p-4 sm:p-6 md:p-10 lg:p-14 xl:p-20 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] border border-black/[0.03] dark:border-white/5">
         {/* BREADCRUMBS (Inspired by image) */}
         <div className="flex flex-wrap items-center gap-2 mb-8 md:mb-10 text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">
-          <Link href="/" className="hover:text-black transition-colors">Accueil</Link>
+          <Link href="/" className="hover:text-black transition-colors">{t('cart.home')}</Link>
           <span className="text-gray-300">/</span>
-          <Link href="/cart" className="hover:text-black transition-colors">Panier</Link>
+          <Link href="/cart" className="hover:text-black transition-colors">{t('cart.cart')}</Link>
           <span className="text-gray-300">/</span>
-          <span className="text-black dark:text-white">Commande</span>
+          <span className="text-black dark:text-white">{t('cart.order')}</span>
         </div>
 
         <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#8B4513] dark:text-white tracking-tight md:tracking-tighter leading-none uppercase mb-10 md:mb-16">
-          Mon panier
+          {t('cart.title')}
         </h2>
 
         <div className="flex flex-col lg:flex-row gap-10 md:gap-16 xl:gap-24">
@@ -106,13 +107,13 @@ export const CartView: React.FC = () => {
             <div className="space-y-8 md:space-y-12">
               <div>
                 <h3 className="text-2xl md:text-3xl font-black text-[#8B4513] dark:text-white uppercase tracking-tight md:tracking-tighter mb-6 md:mb-8">
-                  Résumé
+                  {t('cart.summary')}
                 </h3>
 
                 <div className="space-y-6">
                   <div className="flex justify-between items-center text-sm border-b border-gray-100 dark:border-white/5 pb-4">
                     <span className="font-bold text-gray-400 uppercase text-[11px] tracking-[0.2em]">
-                      Sous-total
+                      {t('cart.subtotal')}
                     </span>
                     <span className="font-black text-black dark:text-white text-lg">
                       {subtotal.toLocaleString()} {currencySymbol}
@@ -120,15 +121,15 @@ export const CartView: React.FC = () => {
                   </div>
                   <div className="flex justify-between items-center text-sm border-b border-gray-100 dark:border-white/5 pb-4">
                     <span className="font-bold text-gray-400 uppercase text-[11px] tracking-[0.2em]">
-                      Livraison / retrait
+                      {t('cart.shipping')}
                     </span>
                     <span className="font-black text-[#2D5A27] text-[11px] uppercase tracking-widest bg-[#2D5A27]/5 px-3 py-1 rounded-full">
-                      À discuter
+                      {t('cart.toDiscuss')}
                     </span>
                   </div>
                   <div className="pt-6 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
                     <span className="font-black text-black dark:text-white uppercase text-sm tracking-[0.3em]">
-                      Total
+                      {t('cart.total')}
                     </span>
                     <span className="text-3xl sm:text-4xl md:text-5xl font-black text-[#A64B2A] break-words">
                       {total.toLocaleString()} {currencySymbol}
@@ -142,7 +143,7 @@ export const CartView: React.FC = () => {
                   className="w-full min-h-14 py-4 sm:py-6 md:py-8 bg-[#A64B2A] hover:bg-[#8B3A1E] text-white shadow-2xl shadow-orange-900/20 font-black uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-[13px] rounded-2xl border-none transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-normal text-center"
                   onClick={() => {
                     if (!user) {
-                      showToast("Veuillez vous connecter pour commander", "error");
+                      showToast(t('cart.loginRequired'), "error");
                       router.push("/login?redirect=/cart");
                       return;
                     }
@@ -154,11 +155,11 @@ export const CartView: React.FC = () => {
                     </span>
                   }
                 >
-                  Envoyer la commande
+                  {t('cart.submitOrder')}
                 </Button>
                 <Link href="/products" className="block text-center mt-6 group">
                   <span className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-400 group-hover:text-[#A64B2A] transition-colors relative">
-                    Continuer les achats
+                    {t('cart.continueShopping')}
                     <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-[#A64B2A] transition-all group-hover:w-full"></span>
                   </span>
                 </Link>
@@ -167,15 +168,15 @@ export const CartView: React.FC = () => {
               <div className="pt-8 md:pt-12 grid grid-cols-3 gap-3 sm:flex sm:items-center sm:justify-start sm:gap-8 opacity-20 grayscale pointer-events-none border-t border-gray-100 dark:border-white/5">
                 <div className="flex flex-col items-center gap-2 min-w-0">
                   <span className="material-symbols-outlined text-3xl">chat</span>
-                  <span className="text-[8px] font-black uppercase tracking-widest text-center">Discussion<br />WhatsApp</span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-center">{t('cart.whatsappChat')}</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 min-w-0">
                   <span className="material-symbols-outlined text-3xl">local_shipping</span>
-                  <span className="text-[8px] font-black uppercase tracking-widest text-center">Retrait ou<br />livraison</span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-center">{t('cart.pickupDelivery')}</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 min-w-0">
                   <span className="material-symbols-outlined text-3xl">verified_user</span>
-                  <span className="text-[8px] font-black uppercase tracking-widest text-center">Garantie<br />WapiBei</span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-center">{t('cart.guarantee')}</span>
                 </div>
               </div>
             </div>
@@ -208,10 +209,10 @@ export const CartView: React.FC = () => {
                         </div>
                         <div className="mt-2 space-y-1">
                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                            Vendeur: <span className="text-gray-600 dark:text-gray-300">{item.product.user?.boutiqueName || "WapiBei"}</span>
+                            {t('cart.vendor')}: <span className="text-gray-600 dark:text-gray-300">{item.product.user?.boutiqueName || "WapiBei"}</span>
                           </p>
                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                            Ville: <span className="text-gray-600 dark:text-gray-300">{item.product.city}</span>
+                            {t('cart.city')}: <span className="text-gray-600 dark:text-gray-300">{item.product.city}</span>
                           </p>
                         </div>
                       </div>
@@ -224,10 +225,10 @@ export const CartView: React.FC = () => {
                         </div>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                           <button className="text-[10px] font-black text-gray-300 hover:text-[#A64B2A] uppercase tracking-widest transition-colors flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">favorite</span> Favoris
+                            <span className="material-symbols-outlined text-xs">favorite</span> {t('cart.favorites')}
                           </button>
                           <button onClick={() => removeItem(item.product.id)} className="text-[10px] font-black text-gray-300 hover:text-red-500 uppercase tracking-widest transition-colors flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">close</span> Supprimer
+                            <span className="material-symbols-outlined text-xs">close</span> {t('cart.remove')}
                           </button>
                         </div>
                       </div>
@@ -241,11 +242,10 @@ export const CartView: React.FC = () => {
             <div className="pt-10 border-t border-gray-100 dark:border-white/5">
               <div className="rounded-2xl bg-[#2D5A27]/5 border border-[#2D5A27]/10 px-5 py-4">
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#2D5A27]">
-                  Après validation
+                  {t('cart.afterValidation')}
                 </p>
                 <p className="mt-2 text-xs font-bold leading-6 text-gray-500 dark:text-gray-400">
-                  Le vendeur reçoit votre commande et vous contacte pour confirmer
-                  le prix final, la disponibilité et les modalités sur WhatsApp.
+                  {t('cart.afterValidationDesc')}
                 </p>
               </div>
             </div>
@@ -269,4 +269,3 @@ export const CartView: React.FC = () => {
     </div>
   );
 };
-

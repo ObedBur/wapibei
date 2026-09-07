@@ -148,11 +148,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   </span>
                 </div>
                 {/* Unité : "/Pièce" ALIGNÉ À DROITE */}
-                {product.unit && (
-                  <span className={`${compact ? 'text-[8px]' : 'text-[8.5px] md:text-[9.5px]'} font-medium text-white/65 leading-none mt-0.5 pr-1`}>
-                    {t('product.unitPer').replace('{unit}', product.unit)}
-                  </span>
-                )}
+                {product.unit && (() => {
+                  const unitKey = `product.units.${product.unit.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+                  const translatedUnit = t(unitKey);
+                  const displayUnit = translatedUnit !== unitKey ? translatedUnit : product.unit;
+                  return (
+                    <span className={`${compact ? 'text-[8px]' : 'text-[8.5px] md:text-[9.5px]'} font-medium text-white/65 leading-none mt-0.5 pr-1`}>
+                      {t('product.unitPer').replace('{unit}', displayUnit)}
+                    </span>
+                  );
+                })()}
               </div>
             </div>
 
