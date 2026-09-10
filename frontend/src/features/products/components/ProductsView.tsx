@@ -8,9 +8,9 @@ import {
   ProductFilterSidebar, 
   ProductFilterMobile, 
   ProductSortSelect, 
-  ProductPagination,
   ProductQuickView
 } from './index';
+import { Pagination } from '@/components/ui/Pagination';
 import { useProductFilters } from '../hooks/useProductFilters';
 import { useProductListView } from '../hooks/useProductListView';
 import { useQuickView } from '../hooks/useQuickView';
@@ -83,7 +83,7 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                   onQuickView={openQuickView} 
                 />
 
-                <ProductPagination 
+                <Pagination 
                   currentPage={filters.page} 
                   totalPages={totalPages} 
                   onPageChange={(p) => updateFilters({ page: p })} 

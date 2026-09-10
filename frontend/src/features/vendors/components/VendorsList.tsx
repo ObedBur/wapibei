@@ -3,6 +3,7 @@ import { User, KycStatus } from '@/types';
 import { VendorCard } from './VendorCard';
 import { VendorDetailModal } from './VendorDetailModal';
 import { VendorFilters } from './VendorFilters';
+import { Pagination } from '@/components/ui/Pagination';
 
 interface VendorsListProps {
     vendors: User[];
@@ -84,29 +85,15 @@ export const VendorsList: React.FC<VendorsListProps> = ({
             )}
 
             {/* Pagination */}
-            {pagination && pagination.pages > 1 && onPageChange && (
-                <div className="flex items-center justify-between bg-white rounded-2xl border border-slate-200/80 shadow-xs px-4 py-3">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        {(pagination.page - 1) * pagination.limit + (vendors.length > 0 ? 1 : 0)}-{(pagination.page - 1) * pagination.limit + vendors.length} / {pagination.total}
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => onPageChange(Math.max(1, pagination.page - 1))}
-                            disabled={pagination.page <= 1}
-                            className="h-8 px-3 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:hover:bg-white transition-all shadow-xs uppercase tracking-wider cursor-pointer"
-                        >
-                            Précédent
-                        </button>
-                        <span className="text-xs font-black text-slate-700">{pagination.page} / {pagination.pages}</span>
-                        <button
-                            onClick={() => onPageChange(Math.min(pagination.pages, pagination.page + 1))}
-                            disabled={pagination.page >= pagination.pages}
-                            className="h-8 px-3 bg-emerald-600 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-emerald-600 transition-all shadow-xs uppercase tracking-wider cursor-pointer"
-                        >
-                            Suivant
-                        </button>
-                    </div>
-                </div>
+            {pagination && onPageChange && (
+                <Pagination
+                    currentPage={pagination.page}
+                    totalPages={pagination.pages}
+                    onPageChange={onPageChange}
+                    totalItems={pagination.total}
+                    itemsPerPage={pagination.limit}
+                    itemsOnPage={vendors.length}
+                />
             )}
 
             {/* Modal */}
