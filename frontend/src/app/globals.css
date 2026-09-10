@@ -66,23 +66,25 @@
 }
  
 .dark, .theme-dark {
-  --background: var(--wapi-black);
-  --foreground: var(--wapi-white);
+  /* Dark mode needs distinct surfaces. Pure black collapses the dashboard,
+     controls, and cards into one unreadable plane. */
+  --background: 222 47% 8%;
+  --foreground: 210 40% 96%;
  
-  --card: var(--wapi-black);            
-  --card-foreground: var(--wapi-white);
+  --card: 222 36% 14%;
+  --card-foreground: 210 40% 96%;
  
-  --popover: var(--wapi-black);
-  --popover-foreground: var(--wapi-white);
+  --popover: 222 36% 16%;
+  --popover-foreground: 210 40% 96%;
  
   --primary: var(--wapi-orange);
-  --primary-foreground: var(--wapi-black);
+  --primary-foreground: var(--wapi-white);
  
   --secondary: var(--wapi-green);
   --secondary-foreground: var(--wapi-white);
  
-  --muted: var(--wapi-black);
-  --muted-foreground: var(--wapi-white);
+  --muted: 222 24% 19%;
+  --muted-foreground: 215 20% 72%;
  
   --accent: var(--wapi-green);
   --accent-foreground: var(--wapi-white);
@@ -90,20 +92,20 @@
   --destructive: var(--wapi-orange);
   --destructive-foreground: var(--wapi-white);
  
-  --border: var(--wapi-white);
-  --input: var(--wapi-white);
+  --border: 217 25% 28%;
+  --input: 217 25% 28%;
   --ring: var(--wapi-orange);
 
-  --deep-blue: var(--wapi-white);
-  --border-sep: var(--wapi-white);
-  --background-alt: var(--wapi-black);
-  --sidebar-bg-start: var(--wapi-black);
-  --sidebar-bg-end: var(--wapi-black);
+  --deep-blue: 210 40% 96%;
+  --border-sep: 217 25% 28%;
+  --background-alt: 222 47% 8%;
+  --sidebar-bg-start: 222 47% 11%;
+  --sidebar-bg-end: 222 36% 14%;
 
   /* E-Commerce Dark mapped to the 4 colors */
   --price: var(--wapi-orange);
   --promo: var(--wapi-orange);
-  --skeleton: var(--wapi-white);
+  --skeleton: 217 25% 28%;
 }
 
 @theme inline {

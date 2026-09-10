@@ -4,7 +4,7 @@ import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
-    User, Store, Package, ShoppingBag,
+    User, Package, ShoppingBag,
     Bell, ShieldCheck, Settings as SettingsIcon, Heart, TrendingUp, LogOut, ArrowLeft, MapPin
 } from 'lucide-react';
 import { User as UserType } from '@/types/auth';
@@ -43,7 +43,7 @@ const VendorSidebarContent: React.FC<VendorSidebarProps> = ({ user }) => {
     ];
 
     return (
-        <aside className="hidden lg:flex lg:w-[260px] h-[100dvh] bg-white dark:bg-[#111827] border-r border-gray-100 dark:border-white/5 sticky top-0 flex-col shrink-0 z-40">
+        <aside className="hidden lg:flex lg:w-[260px] h-[100dvh] bg-white dark:bg-[#111827] border-r border-gray-100 dark:border-slate-700/70 sticky top-0 flex-col shrink-0 z-40">
             
             {/* LOGO */}
             <div className="h-[76px] px-8 flex items-center justify-start gap-3 border-b border-gray-100 dark:border-white/5 shrink-0">
@@ -87,7 +87,7 @@ const VendorSidebarContent: React.FC<VendorSidebarProps> = ({ user }) => {
                             className={`w-full relative flex items-center justify-start gap-4 px-5 py-3 rounded-xl text-sm font-semibold transition-all ${
                                 isActive
                                     ? 'bg-[#E67E22] text-white shadow-sm shadow-[#E67E22]/20'
-                                    : 'text-slate-700 hover:text-slate-900 dark:text-slate-350 dark:hover:text-white hover:bg-slate-50/50 dark:hover:bg-white/5'
+                                    : 'text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-50/50 dark:hover:bg-white/10'
                             }`}
                         >
                             <item.icon size={20} className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`} />
@@ -136,7 +136,7 @@ const VendorSidebarContent: React.FC<VendorSidebarProps> = ({ user }) => {
 
 export const VendorSidebar: React.FC<VendorSidebarProps> = (props) => {
     return (
-        <Suspense fallback={<aside className="hidden lg:flex lg:w-[260px] h-[100dvh] bg-white dark:bg-[#111827] border-r border-gray-100 dark:border-white/5 sticky top-0 flex-col shrink-0 z-40"></aside>}>
+            <Suspense fallback={<aside className="hidden lg:flex lg:w-[260px] h-[100dvh] bg-white dark:bg-[#111827] border-r border-gray-100 dark:border-slate-700/70 sticky top-0 flex-col shrink-0 z-40"></aside>}>
             <VendorSidebarContent {...props} />
         </Suspense>
     );

@@ -232,8 +232,11 @@ export const DesktopHeader = ({
           >
               <span className="material-symbols-outlined text-[22px]">shopping_bag</span>
               {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 size-5 bg-[#E67E22] text-white text-[10px] font-black flex items-center justify-center rounded-full shadow-lg border-2 border-white dark:border-black">
-                      {totalItems}
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-1 -right-1 z-10 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-[#E67E22] px-1 text-[10px] font-black leading-none tabular-nums text-white shadow-md dark:border-black"
+                  >
+                      {totalItems > 99 ? '99+' : totalItems}
                   </span>
               )}
           </Link>

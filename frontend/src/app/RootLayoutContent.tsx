@@ -36,7 +36,7 @@ export default function RootLayoutContent({ children }: { children: React.ReactN
 
   if (isDashboardPage) {
     return (
-      <div className="flex flex-row min-h-screen bg-[#F8FAFC] dark:bg-black text-[#1E293B] font-sans antialiased">
+      <div className="flex flex-row min-h-screen bg-[#F8FAFC] dark:bg-[#0B1220] text-[#1E293B] dark:text-slate-100 font-sans antialiased">
         {/* Left column sidebar — desktop only (hidden on mobile/tablet) */}
         <div className="hidden lg:block shrink-0 z-50">
           <VendorSidebar user={user} />

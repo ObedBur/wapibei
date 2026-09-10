@@ -8,10 +8,8 @@ import { ProfileDropdown } from './Header/components/ProfileDropdown';
 import { Search } from 'lucide-react';
 import { useAppNotifications } from '@/hooks/useAppNotifications';
 import { resolveNotificationUrl } from '@/types/notification';
-import { useT } from '@/i18n/useT';
 
 export const DashboardHeader = () => {
-    const { t } = useT();
     const { isAuthenticated, user, logout } = useAuth();
     const router = useRouter();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -32,7 +30,7 @@ export const DashboardHeader = () => {
 
     return (
         <>
-        <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#111]/80 backdrop-blur-md border-b border-black/[0.03] dark:border-white/5 h-16 md:h-20 shrink-0">
+        <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-black/[0.03] dark:border-slate-700/70 h-16 md:h-20 shrink-0">
             <div className="container mx-auto max-w-7xl h-full px-6 md:px-12 lg:px-16 flex items-center justify-between">
 
                 {/* Left: Logo */}

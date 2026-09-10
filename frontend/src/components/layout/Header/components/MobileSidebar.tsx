@@ -18,7 +18,8 @@ import {
   User as UserIcon,
   ArrowRight,
   ChevronRight,
-  GripHorizontal
+  GripHorizontal,
+  type LucideIcon,
 } from 'lucide-react';
 import { useT } from '@/i18n/useT';
 
@@ -38,9 +39,16 @@ interface MobileSidebarProps {
   onLogout: () => void;
 }
 
+const NAV_ICONS: Record<string, LucideIcon> = {
+  home: Home,
+  inventory_2: ShoppingBag,
+  store: Store,
+  compare_arrows: Scale,
+};
 const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
   isOpen,
   onClose,
+  navLinks,
   isAuthenticated,
   isAuthLoading,
   user,
@@ -62,13 +70,10 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
     name?.split(' ').map((n) => n[0]).join('').toUpperCase().substring(0, 2) || 'U';
 
   const isVendor = user?.role === 'VENDOR';
-
-  const navItems = [
-    { id: '/',         label: t(''),    Icon: Home,        vendor: true,  client: true },
-    { id: '/products', label: t(''), Icon: ShoppingBag, vendor: true,  client: true },
-    { id: '/sellers',  label: t(''),  Icon: Store,       vendor: false, client: true },
-    { id: '/compare',  label: t(''),  Icon: Scale,       vendor: true,  client: true },
-  ].filter((item) => (isVendor ? item.vendor : item.client));
+  const navItems = navLinks.map((item) => ({
+    ...item,
+    Icon: NAV_ICONS[item.icon] ?? Home,
+  }));
 
   const sidebarContent = (
     <div
@@ -101,14 +106,14 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
             <div className="flex items-start justify-between mb-8">
               <div>
                 <span className="text-xl font-black text-[#0F172A] dark:text-white uppercase tracking-wider">
-                  {t('')}
+                  {t('header.menu')}
                 </span>
                 <div className="h-1 w-8 bg-[#E67E22] rounded-full mt-1.5" />
               </div>
 
               <button
                 onClick={onClose}
-                aria-label={t('')}
+                aria-label={t('header.menu')}
                 className="size-10 flex items-center justify-center rounded-full bg-[#F1F5F9] dark:bg-white/10 text-[#0F172A] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
               >
                 <X size={20} strokeWidth={2.5} />
@@ -153,8 +158,8 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-bold text-white">{t('')}</p>
-                  <p className="text-[11px] text-white/60 mt-0.5 truncate">{t('')}</p>
+                  <p className="text-[15px] font-bold text-white">{t('header.login')}</p>
+                  <p className="text-[11px] text-white/60 mt-0.5 truncate">{t('header.loginDesc')}</p>
                 </div>
 
                 <div className="size-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-[#E67E22] transition-colors">
@@ -169,7 +174,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
             <div className="flex items-center gap-3 mb-5">
               <LayoutGrid size={15} className="text-[#94A3B8]" strokeWidth={2.5} />
               <span className="text-[11px] font-black text-[#64748B] dark:text-gray-400 uppercase tracking-widest shrink-0">
-                {t('')}
+                {t('header.mainNavigation')}
               </span>
               <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
             </div>
@@ -199,7 +204,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                       />
                     </div>
                     
-                    <span className={`flex-1 text-[15px] font-bold ${
+                    <span className={`min-w-0 flex-1 text-[15px] font-bold ${
                       active ? 'text-white' : 'text-[#0F172A] dark:text-white'
                     }`}>
                       {label}
@@ -221,7 +226,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                 <div className="flex items-center gap-3 mb-5">
                   <GripHorizontal size={15} className="text-[#94A3B8]" strokeWidth={2.5} />
                   <span className="text-[11px] font-black text-[#64748B] dark:text-gray-400 uppercase tracking-widest shrink-0">
-                    {isVendor ? t('') : t('')}
+                    {isVendor ? t('header.vendorSpace') : t('header.clientSpace')}
                   </span>
                   <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
                 </div>

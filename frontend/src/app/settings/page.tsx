@@ -196,8 +196,8 @@ function SettingsPageContent() {
   // This unified view works on both mobile (full screen) and desktop (content area beside VendorSidebar)
   if (activeTab) {
     return (
-      <div className="min-h-0 bg-[#F6F1E0] dark:bg-black lg:bg-transparent dark:lg:bg-transparent">
-        <div className="max-w-md mx-auto min-h-0 bg-white dark:bg-[#0d1117] shadow-2xl lg:max-w-none lg:shadow-none lg:mx-0 lg:px-8">
+      <div className="min-h-0 bg-[#F6F1E0] dark:bg-[#0B1220] lg:bg-transparent dark:lg:bg-transparent">
+        <div className="max-w-md mx-auto min-h-0 bg-white dark:bg-[#111827] shadow-2xl lg:max-w-none lg:shadow-none lg:mx-0 lg:px-8">
           {/* Modale d'édition */}
           <EditProfileModal
             isOpen={isEditModalOpen}

@@ -59,8 +59,8 @@ export const FeaturedStores: React.FC<FeaturedStoresProps> = ({ stores }) => {
   return (
     <div className="py-12">
       {/* HEADER */}
-      <div className="flex items-end justify-between mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
-        <div className="space-y-2">
+      <div className="flex items-end justify-between gap-4 mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
+        <div className="min-w-0 space-y-2">
           <span className="text-[10px] font-black text-[#E67E22] uppercase tracking-[0.3em]">
             {safeLabel(
               t("home.featuredStores.pretitle"),
@@ -78,7 +78,8 @@ export const FeaturedStores: React.FC<FeaturedStoresProps> = ({ stores }) => {
 
         <Link
           href="/sellers"
-          className="group flex items-center gap-2 text-xs font-black text-gray-500 dark:text-gray-400 hover:text-[#E67E22] dark:hover:text-[#E67E22] transition-all duration-200"
+          aria-label={safeLabel(t("home.featuredStores.exploreAll"), "Explorer tout")}
+          className="group inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl px-2 text-right text-xs font-black leading-tight text-gray-500 transition-colors duration-200 hover:text-[#E67E22] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E67E22] dark:text-gray-400 dark:hover:text-[#E67E22]"
         >
           {safeLabel(
             t("home.featuredStores.exploreAll"),
