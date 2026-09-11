@@ -86,7 +86,13 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                 <Pagination 
                   currentPage={filters.page} 
                   totalPages={totalPages} 
-                  onPageChange={(p) => updateFilters({ page: p })} 
+                  onPageChange={(p) => {
+                    updateFilters({ page: p });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  totalItems={totalCount}
+                  itemsPerPage={12}
+                  itemsOnPage={paginatedProducts.length}
                 />
             </div>
         </div>

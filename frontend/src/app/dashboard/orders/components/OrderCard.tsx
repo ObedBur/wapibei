@@ -28,6 +28,12 @@ export function OrderCard({ id, originalId, status, total, date, count, customer
     const isShipped = status === 'SHIPPED';
     const isDelivered = status === 'DELIVERED';
     const isCancelled = status === 'CANCELLED';
+    const whatsappMessage = encodeURIComponent(
+        `Bonjour ${customer}, je vous contacte au sujet de votre commande WapiBei #${id} pour « ${productName} » (${total} $).`,
+    );
+    const whatsappUrl = customerPhone
+        ? `https://wa.me/${customerPhone.replace(/\D/g, '')}?text=${whatsappMessage}`
+        : undefined;
 
     const statusLabels: Record<string, string> = {
         PENDING: t('vendor.orderCard.status.pending'),
@@ -140,7 +146,7 @@ export function OrderCard({ id, originalId, status, total, date, count, customer
                             <span>{t('vendor.orderCard.confirm')}</span>
                         </button>
                         <a
-                            href={`https://wa.me/${customerPhone?.replace(/\D/g, '')}`}
+                            href={whatsappUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="col-span-1 py-3 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-1.5"
@@ -160,7 +166,7 @@ export function OrderCard({ id, originalId, status, total, date, count, customer
                             <span>{t('vendor.orderCard.ship')}</span>
                         </button>
                         <a
-                            href={`https://wa.me/${customerPhone?.replace(/\D/g, '')}`}
+                            href={whatsappUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="col-span-1 py-3 bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-1.5"

@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Category, ProductFilters } from '../types';
 import { motion } from 'framer-motion';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -18,12 +19,30 @@ export const ProductFilterMobile: React.FC<MobileDrawerProps> = ({ isOpen, onClo
   const [maxPrice, setMaxPrice] = useState<string>(filters.maxPrice || '');
   const [searchQuery, setSearchQuery] = useState<string>(filters.search || '');
 
+  // Synchronise en cas de changement extérieur
+  useEffect(() => {
+    setSearchQuery(filters.search || '');
+    setMinPrice(filters.minPrice || '');
+    setMaxPrice(filters.maxPrice || '');
+  }, [filters.search, filters.minPrice, filters.maxPrice]);
+
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    onUpdate({ search: value || null, page: 1 });
+  }, 300);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    debouncedSearch(value); // Filtre instantané pour la recherche
+  };
+
   const handleCategoryClick = (categoryId: string | null) => {
     onUpdate({ categoryId, page: 1, search: searchQuery || null });
+    onClose(); // Sur mobile, choisir une catégorie ferme souvent le tiroir
   };
 
   const handleApply = () => {
-    onUpdate({ categoryId: filters.categoryId, minPrice, maxPrice, search: searchQuery || null });
+    onUpdate({ minPrice, maxPrice, search: searchQuery || null });
     onClose();
   };
 
@@ -84,7 +103,7 @@ export const ProductFilterMobile: React.FC<MobileDrawerProps> = ({ isOpen, onClo
                 type="text"
                 placeholder="Rechercher un produit..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
                 aria-label="Rechercher un produit"
                 className="flex-1 w-full px-4 py-3 text-[15px] outline-none text-slate-700 dark:text-white bg-transparent"
               />

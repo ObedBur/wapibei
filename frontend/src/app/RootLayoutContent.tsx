@@ -16,14 +16,13 @@ export default function RootLayoutContent({ children }: { children: React.ReactN
   const isAdminPage = pathname?.startsWith('/admin');
   const isDashboardPage = pathname?.startsWith('/dashboard') || pathname?.startsWith('/settings');
 
-  // Splash screen: signal ready globally once the auth bootstrap has finished.
-  // This runs on every initial full page load (any URL), so the splash never
-  // relies on individual pages opting in.
+  // The home route owns its first-paint handoff so its splash stays visible
+  // until HomeClient has mounted. Other routes still unlock after auth bootstraps.
   useEffect(() => {
-    if (!authLoading) {
+    if (!authLoading && pathname !== '/') {
       setAppReady(true);
     }
-  }, [authLoading, setAppReady]);
+  }, [authLoading, pathname, setAppReady]);
 
   // Reset scroll to top on route change
   useEffect(() => {

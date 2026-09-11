@@ -398,6 +398,7 @@ export default function ProductPage() {
                   avatarUrl={product.user?.avatarUrl}
                   productName={product.name}
                   productPrice={`${product.price}$`}
+                  productId={product.id}
                   sellerId={product.user?.id}
                 />
               </div>

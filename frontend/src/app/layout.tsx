@@ -69,7 +69,7 @@ export default async function RootLayout({
   const lang = await readRequestLanguage();
 
   return (
-    <html lang={lang} className={`scroll-smooth ${outfit.variable}`} data-scroll-behavior="smooth">
+    <html lang={lang} className={`scroll-smooth ${outfit.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap"

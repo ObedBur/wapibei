@@ -154,7 +154,7 @@ interface HeroProps {
 const REGISTER_VENDOR_HREF = "/register?role=VENDOR#role-vendeur";
 
 export const Hero: React.FC<HeroProps> = ({ slides }) => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const { t } = useT();
 
   const LOCAL_SLIDES: HeroSlide[] = [
@@ -171,12 +171,36 @@ export const Hero: React.FC<HeroProps> = ({ slides }) => {
   }));
 
   const handleVendorClick = async (e: React.MouseEvent) => {
-    if (isAuthenticated) {
-      e.preventDefault();
+    if (!isAuthenticated) return; // non connecté → lien normal vers /register
+
+    e.preventDefault();
+
+    const isVendor = user?.role === 'VENDOR' || user?.role === 'ADMIN';
+
+    if (isVendor) {
+      // Vendeur/Admin → redirection directe vers le dashboard
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    // Client connecté → demander confirmation avant de déconnecter
+    const firstName = user?.fullName?.split(' ')[0] ?? 'vous';
+    const confirmed = window.confirm(
+      `Vous êtes connecté en tant que ${firstName}.\n\nPour créer un compte vendeur, vous devez d'abord vous déconnecter.\n\nVoulez-vous continuer ?`
+    );
+
+    if (confirmed) {
       await logout();
       window.location.href = REGISTER_VENDOR_HREF;
     }
   };
+
+  // Libellé et destination du bouton 2 selon le rôle
+  const isVendorOrAdmin = user?.role === 'VENDOR' || user?.role === 'ADMIN';
+  const vendorBtnLabel = isVendorOrAdmin
+    ? t('home.hero.myVendorSpace')
+    : t('home.hero.becomeVendor');
+  const vendorBtnHref = isVendorOrAdmin ? '/dashboard' : REGISTER_VENDOR_HREF;
 
   return (
     <section className="relative px-4 py-12 md:py-20 lg:py-24 container mx-auto max-w-7xl overflow-hidden">
@@ -294,12 +318,12 @@ export const Hero: React.FC<HeroProps> = ({ slides }) => {
               </motion.div>
             </Link>
 
-            <Link href={REGISTER_VENDOR_HREF} className="w-full sm:w-auto" onClick={handleVendorClick}>
+            <Link href={vendorBtnHref} className="w-full sm:w-auto" onClick={handleVendorClick}>
               <motion.div
                 whileHover={{ y: -2 }}
                 className="h-14 w-full sm:w-auto px-8 rounded-xl border-2 border-[#2D5A27]/20 text-[#2D5A27] font-bold hover:bg-[#2D5A27] hover:text-white dark:border-white/10 dark:hover:bg-white dark:hover:text-black transition-colors duration-300 flex items-center justify-center cursor-pointer"
               >
-                {t("home.hero.becomeVendor")}
+                {vendorBtnLabel}
               </motion.div>
             </Link>
           </div>

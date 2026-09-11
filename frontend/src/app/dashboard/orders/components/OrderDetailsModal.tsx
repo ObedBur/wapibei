@@ -9,8 +9,16 @@ export interface OrderDetailsModalProps {
 }
 
 export function OrderDetailsModal({ order, onClose, onStatusChange }: OrderDetailsModalProps) {
-    const { t } = useT();
-    if (!order) return null;
+  const { t } = useT();
+  if (!order) return null;
+  const orderReference = order.id.substring(0, 12).toUpperCase();
+  const productName = order.product?.name || t('vendor.orders.unknownProduct');
+  const whatsappMessage = encodeURIComponent(
+    `Bonjour ${order.customerName || ''}, je vous contacte au sujet de votre commande WapiBei #${orderReference} pour « ${productName} » (${order.totalPrice} $).`,
+  );
+  const whatsappUrl = order.customerPhone
+    ? `https://wa.me/${order.customerPhone.replace(/\D/g, '')}?text=${whatsappMessage}`
+    : undefined;
 
     return (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -33,7 +41,7 @@ export function OrderDetailsModal({ order, onClose, onStatusChange }: OrderDetai
                             {t('vendor.orderDetails.title')}
                         </h3>
                         <p className="text-[#E67E22] text-[10px] sm:text-xs font-black uppercase tracking-[0.2em]">
-                            #{order.id.substring(0, 12).toUpperCase()}
+                            #{orderReference}
                         </p>
                     </div>
                     <button
@@ -87,7 +95,7 @@ export function OrderDetailsModal({ order, onClose, onStatusChange }: OrderDetai
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h5 className="text-sm sm:text-base font-black text-deep-blue dark:text-white mb-2 truncate">
-                                    {order.product?.name || t('vendor.orders.unknownProduct')}
+                                    {productName}
                                 </h5>
                                 <div className="flex items-center gap-3">
                                     <div className="px-2 py-1 bg-gray-100 dark:bg-white/5 rounded-md text-[9px] font-black uppercase text-gray-500">
@@ -105,7 +113,7 @@ export function OrderDetailsModal({ order, onClose, onStatusChange }: OrderDetai
                 {/* Footer Actions */}
                 <div className="p-5 sm:p-8 pb-8 sm:pb-8 bg-white dark:bg-[#0f172a] flex gap-3 sm:gap-4 border-t border-gray-100 dark:border-white/5 shrink-0 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-none">
                     <a
-                        href={`https://wa.me/${(order.customerPhone || "").replace(/\D/g, '')}`}
+                        href={whatsappUrl}
                         target="_blank" rel="noopener noreferrer"
                         className="flex-1 py-3.5 sm:py-4 bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest text-[#2D5A27] dark:text-green-400 text-center flex items-center justify-center gap-2 transition-colors"
                     >

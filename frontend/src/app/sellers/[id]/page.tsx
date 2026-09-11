@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Pagination } from '@/components/ui/Pagination';
 import { getSellerById, toggleFollowVendor } from '@/features/home/services/seller.service';
 import { useAuth } from '@/context/AuthContext';
 import { ProductCard } from '@/features/products/components/ProductCard';
@@ -101,10 +101,6 @@ export default function SellerDetailPage() {
     currentPage * PAGE_SIZE
   );
 
-  const goToPage = (page: number) => {
-    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   /* ─────────────────────────── SKELETON STATE ─────────────────────────── */
   if (isLoading) {
@@ -274,63 +270,18 @@ export default function SellerDetailPage() {
               ))}
             </div>
 
-            {/* PAGINATION — only if more than 20 products */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-12">
-                {/* PREV */}
-                <button
-                  onClick={() => goToPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex items-center justify-center size-10 rounded-xl bg-white dark:bg-[#111827] border border-gray-100 dark:border-white/5 shadow-sm text-gray-400 hover:text-[#E67E22] hover:border-[#E67E22]/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <ChevronLeft className="size-5" strokeWidth={2.5} />
-                </button>
-
-                {/* PAGE NUMBERS */}
-                {Array.from({ length: totalPages }).map((_, idx) => {
-                  const page = idx + 1;
-                  // Show first, last, current ±1, and ellipsis
-                  const showPage = page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
-                  const showEllipsisBefore = page === currentPage - 2 && page > 2;
-                  const showEllipsisAfter = page === currentPage + 2 && page < totalPages - 1;
-
-                  if (!showPage && !showEllipsisBefore && !showEllipsisAfter) return null;
-                  if (showEllipsisBefore || showEllipsisAfter) {
-                    return <span key={`ellipsis-${idx}`} className="text-gray-400 text-sm font-black px-1">…</span>;
-                  }
-
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => goToPage(page)}
-                      className={`size-10 rounded-xl text-sm font-black transition-all ${
-                        currentPage === page
-                          ? 'bg-[#E67E22] text-white shadow-lg shadow-[#E67E22]/25'
-                          : 'bg-white dark:bg-[#111827] border border-gray-100 dark:border-white/5 text-gray-500 hover:border-[#E67E22]/30 hover:text-[#E67E22]'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
-
-                {/* NEXT */}
-                <button
-                  onClick={() => goToPage(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="flex items-center justify-center size-10 rounded-xl bg-white dark:bg-[#111827] border border-gray-100 dark:border-white/5 shadow-sm text-gray-400 hover:text-[#E67E22] hover:border-[#E67E22]/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <ChevronRight className="size-5" strokeWidth={2.5} />
-                </button>
-              </div>
-            )}
-
-            {/* PAGE INFO */}
-            {totalPages > 1 && (
-              <p className="text-center text-xs text-gray-400 font-medium mt-4">
-                {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, mappedProducts.length)} sur {mappedProducts.length} produits
-              </p>
-            )}
+            {/* PAGINATION */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(p) => {
+                setCurrentPage(Math.max(1, Math.min(p, totalPages)));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              totalItems={mappedProducts.length}
+              itemsPerPage={PAGE_SIZE}
+              itemsOnPage={paginatedProducts.length}
+            />
           </>
         ) : (
           <div className="text-center py-20 bg-white dark:bg-[#111827] rounded-[3rem] border border-dashed border-gray-200 dark:border-white/10">

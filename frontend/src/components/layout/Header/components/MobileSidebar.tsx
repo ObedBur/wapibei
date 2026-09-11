@@ -170,7 +170,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
           </div>
 
           {/* Navigation Links */}
-          <div className="px-6 sm:px-8 py-8">
+          <div className="px-4 sm:px-6 py-6 flex-1 flex flex-col">
             <div className="flex items-center gap-3 mb-5">
               <LayoutGrid size={15} className="text-[#94A3B8]" strokeWidth={2.5} />
               <span className="text-[11px] font-black text-[#64748B] dark:text-gray-400 uppercase tracking-widest shrink-0">
@@ -179,7 +179,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
               <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
               {navItems.map(({ id, label, Icon }) => {
                 const active = isActive(id);
 
@@ -188,33 +188,23 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                     key={id}
                     href={id}
                     onClick={onClose}
-                    className={`flex items-center gap-4 p-3 pr-4 rounded-[1.5rem] transition-all duration-300 ${
+                    className={`flex items-center gap-4 py-3.5 px-3 rounded-2xl transition-colors duration-200 ${
                       active
-                        ? 'bg-[#E67E22] shadow-[0_8px_20px_-6px_rgba(230,126,34,0.4)]'
-                        : 'bg-white dark:bg-[#1e293b] border border-transparent shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-orange-200 dark:hover:border-white/10'
+                        ? 'bg-[#E67E22]/10 dark:bg-[#E67E22]/20'
+                        : 'hover:bg-slate-100 dark:hover:bg-white/5'
                     }`}
                   >
-                    <div className={`size-11 flex items-center justify-center rounded-[1rem] transition-colors ${
-                      active ? 'bg-white/20' : 'bg-[#F8FAFC] dark:bg-white/5'
-                    }`}>
+                    
                       <Icon
                         size={22}
                         strokeWidth={active ? 2.5 : 2}
-                        className={active ? 'text-white' : 'text-[#0F172A] dark:text-white'}
+                        className={active ? 'text-[#E67E22]' : 'text-slate-500 dark:text-slate-400'}
                       />
-                    </div>
-                    
-                    <span className={`min-w-0 flex-1 text-[15px] font-bold ${
-                      active ? 'text-white' : 'text-[#0F172A] dark:text-white'
-                    }`}>
+                    <span className={`min-w-0 flex-1 text-[16px] font-semibold ${active ? 'text-[#E67E22] dark:text-[#E67E22]' : 'text-slate-700 dark:text-slate-200'}`}>
                       {label}
                     </span>
 
-                    <ChevronRight 
-                      size={18} 
-                      strokeWidth={2.5} 
-                      className={active ? 'text-white' : 'text-[#94A3B8]'} 
-                    />
+                    {active && <div className="size-1.5 rounded-full bg-[#E67E22]" />}
                   </Link>
                 );
               })}
@@ -231,47 +221,39 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                   <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
                   {isVendor && (
                     <Link
                       href="/dashboard"
                       onClick={onClose}
-                      className={`flex items-center gap-4 p-3 pr-4 rounded-[1.5rem] transition-all duration-300 ${
+                      className={`flex items-center gap-4 py-3.5 px-3 rounded-2xl transition-colors duration-200 ${
                         isActive('/dashboard')
-                          ? 'bg-[#E67E22] shadow-[0_8px_20px_-6px_rgba(230,126,34,0.4)]'
-                          : 'bg-white dark:bg-[#1e293b] border border-transparent shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-orange-200 dark:hover:border-white/10'
+                          ? 'bg-[#E67E22]/10 dark:bg-[#E67E22]/20'
+                          : 'hover:bg-slate-100 dark:hover:bg-white/5'
                       }`}
                     >
-                      <div className={`size-11 flex items-center justify-center rounded-[1rem] ${
-                        isActive('/dashboard') ? 'bg-white/20' : 'bg-[#F8FAFC] dark:bg-white/5'
-                      }`}>
-                        <LayoutGrid size={22} strokeWidth={isActive('/dashboard') ? 2.5 : 2} className={isActive('/dashboard') ? 'text-white' : 'text-[#0F172A] dark:text-white'} />
-                      </div>
+                      <LayoutGrid size={22} strokeWidth={isActive('/dashboard') ? 2.5 : 2} className={isActive('/dashboard') ? 'text-[#E67E22]' : 'text-slate-500 dark:text-slate-400'} />
                       <span className={`flex-1 text-[15px] font-bold ${isActive('/dashboard') ? 'text-white' : 'text-[#0F172A] dark:text-white'}`}>
                         {t('header.dashboard')}
                       </span>
-                      <ChevronRight size={18} strokeWidth={2.5} className={isActive('/dashboard') ? 'text-white' : 'text-[#94A3B8]'} />
+                      {isActive('/dashboard') && <div className="size-1.5 rounded-full bg-[#E67E22]" />}
                     </Link>
                   )}
 
-                  <Link
+<Link
                     href="/settings"
                     onClick={onClose}
-                    className={`flex items-center gap-4 p-3 pr-4 rounded-[1.5rem] transition-all duration-300 ${
+                    className={`flex items-center gap-4 py-3.5 px-3 rounded-2xl transition-colors duration-200 ${
                       isActive('/settings')
-                        ? 'bg-[#E67E22] shadow-[0_8px_20px_-6px_rgba(230,126,34,0.4)]'
-                        : 'bg-white dark:bg-[#1e293b] border border-transparent shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-orange-200 dark:hover:border-white/10'
+                        ? 'bg-[#E67E22]/10 dark:bg-[#E67E22]/20'
+                        : 'hover:bg-slate-100 dark:hover:bg-white/5'
                     }`}
                   >
-                    <div className={`size-11 flex items-center justify-center rounded-[1rem] ${
-                      isActive('/settings') ? 'bg-white/20' : 'bg-[#F8FAFC] dark:bg-white/5'
-                    }`}>
-                      <Settings size={22} strokeWidth={isActive('/settings') ? 2.5 : 2} className={isActive('/settings') ? 'text-white' : 'text-[#0F172A] dark:text-white'} />
-                    </div>
+                    <Settings size={22} strokeWidth={isActive('/settings') ? 2.5 : 2} className={isActive('/settings') ? 'text-[#E67E22]' : 'text-slate-500 dark:text-slate-400'} />
                     <span className={`flex-1 text-[15px] font-bold ${isActive('/settings') ? 'text-white' : 'text-[#0F172A] dark:text-white'}`}>
                       {t('header.myAccount')}
                     </span>
-                    <ChevronRight size={18} strokeWidth={2.5} className={isActive('/settings') ? 'text-white' : 'text-[#94A3B8]'} />
+                    {isActive('/settings') && <div className="size-1.5 rounded-full bg-[#E67E22]" />}
                   </Link>
 
                   <button
@@ -279,12 +261,10 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
                       onLogout();
                       onClose();
                     }}
-                    className="flex items-center gap-4 p-3 pr-4 rounded-[1.5rem] transition-all duration-300 bg-white dark:bg-[#1e293b] border border-transparent shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:border-red-100"
+                    className="flex items-center gap-4 py-3.5 px-3 rounded-2xl transition-colors duration-200 hover:bg-red-50 dark:hover:bg-red-500/10 mt-1"
                   >
-                    <div className="size-11 flex items-center justify-center rounded-[1rem] bg-red-50 dark:bg-red-500/10">
-                      <LogOut size={22} strokeWidth={2} className="text-red-500" />
-                    </div>
-                    <span className="flex-1 text-[15px] font-bold text-red-500 text-left">
+                    <LogOut size={22} strokeWidth={2} className="text-red-500" />
+                    <span className="flex-1 text-[16px] font-semibold text-red-500 text-left">
                       {t('header.logout')}
                     </span>
                   </button>
@@ -307,3 +287,8 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = (props) => {
     </React.Suspense>
   );
 };
+
+
+
+
+

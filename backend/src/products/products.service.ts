@@ -393,13 +393,13 @@ export class ProductsService {
    * Déclenche une notification broadcast aux abonnés si le produit est public.
    */
   async create(data: any, userId: string) {
-    const imageUrl = data.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80';
+    const imageUrl = data.image || null;
 
     await this.moderationService.fullValidation(
       data.name, 
       data.description || '', 
       Number(data.price),
-      imageUrl
+      imageUrl || undefined,
     );
 
     for (const extraImage of data.images || []) {

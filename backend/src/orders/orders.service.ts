@@ -217,7 +217,7 @@ export class OrdersService {
       this.notificationsService.sendPushToUser(clientId, {
         title: t(lang, 'notif.orderCreated.client'),
         body: t(lang, 'notif.orderCreated.clientPush'),
-        data: { url: '/orders' }
+        data: { url: '/settings?tab=orders' }
       });
     }
 
@@ -248,6 +248,7 @@ export class OrdersService {
       const productNames = vendorOrders.map(o => o.product.name).join(', ');
       const vendorTotal = vendorOrders.reduce((sum, o) => sum + o.totalPrice, 0);
       const firstImage = vendorOrders[0].product.image || (vendorOrders[0].product.images && vendorOrders[0].product.images[0]);
+      const firstProductUrl = `${(process.env.FRONTEND_URL || 'http://localhost:3000').split(',')[0].trim()}/products/${vendorOrders[0].product.id}`;
 
       const productDetailsList = vendorOrders.map(o => {
         const qty = o.totalPrice / o.product.price;
@@ -274,6 +275,7 @@ export class OrdersService {
         customerPhone,
         productName: whatsappProductName,
         productImage: firstImage,
+        productUrl: firstProductUrl,
         deliveryAddress: address,
         totalPrice: vendorTotal,
         language: lang,
@@ -512,7 +514,7 @@ export class OrdersService {
       this.notificationsService.sendPushToUser(client.id, {
         title,
         body: msg,
-        data: { url: `/orders/${order.id}` }
+        data: { url: '/settings?tab=orders' }
       });
     }
 

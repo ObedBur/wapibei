@@ -5,6 +5,11 @@ import { Plus, X, Package, DollarSign, Database, Tag, Image as ImageIcon, Loader
 import { useT } from '@/i18n/useT';
 
 import { getCategories, addProduct, updateProduct } from '@/features/products/services/product.service';
+import {
+    MAX_PRODUCT_IMAGES,
+    uploadProductImage,
+    validateProductImage,
+} from '@/features/products/services/media.service';
 import { toast } from 'sonner';
 import { Category } from '@/types/category.types';
 
@@ -31,6 +36,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [extraImages, setExtraImages] = useState<File[]>([]);
     const [extraPreviews, setExtraPreviews] = useState<string[]>([]);
+    const [savedExtraImages, setSavedExtraImages] = useState<string[]>([]);
     const [originalPrice, setOriginalPrice] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [quantity, setQuantity] = useState('');
@@ -41,6 +47,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
     const [currency, setCurrency] = useState<'USD' | 'FC'>('USD');
     const EXCHANGE_RATE = 2800; // Taux de change
     const UNITS = [t('vendor.addProduct.units.piece'), t('vendor.addProduct.units.kg'), t('vendor.addProduct.units.liter'), t('vendor.addProduct.units.bag'), t('vendor.addProduct.units.box'), t('vendor.addProduct.units.dozen'), t('vendor.addProduct.units.meter'), t('vendor.addProduct.units.gram')];
+    const maxExtraImages = imagePreview ? MAX_PRODUCT_IMAGES - 1 : MAX_PRODUCT_IMAGES;
 
 
     // Populate form if editing
@@ -56,7 +63,11 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
             setCategoryId(product.categoryId?.toString() || '');
             setQuantity(product.stockQuantity?.toString() || '');
             setUnit(product.unit || t('vendor.addProduct.units.piece'));
+            setImage(null);
             setImagePreview(product.image || null);
+            setExtraImages([]);
+            setExtraPreviews([]);
+            setSavedExtraImages(Array.isArray(product.images) ? product.images : []);
             setIsPublic(product.isPublic !== undefined ? product.isPublic : true);
         } else {
             // Reset for "Add" mode
@@ -73,6 +84,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
             setImagePreview(null);
             setExtraImages([]);
             setExtraPreviews([]);
+            setSavedExtraImages([]);
             setIsPublic(defaultPublic !== undefined ? defaultPublic : true);
         }
     }, [product, isOpen, defaultPublic]);
@@ -98,55 +110,11 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
         setError(null);
 
         try {
-            let base64Image = undefined;
-            if (image) {
-                base64Image = await new Promise<string>((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(image);
-                    reader.onload = (event) => {
-                        const img = new window.Image();
-                        img.src = event.target?.result as string;
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 800;
-                            const MAX_HEIGHT = 800;
-                            let width = img.width;
-                            let height = img.height;
-
-                            if (width > height) {
-                                if (width > MAX_WIDTH) {
-                                    height *= MAX_WIDTH / width;
-                                    width = MAX_WIDTH;
-                                }
-                            } else {
-                                if (height > MAX_HEIGHT) {
-                                    width *= MAX_HEIGHT / height;
-                                    height = MAX_HEIGHT;
-                                }
-                            }
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx?.drawImage(img, 0, 0, width, height);
-                            // Convert back to Base64 (JPEG format, 80% quality)
-                            resolve(canvas.toDataURL('image/jpeg', 0.8));
-                        };
-                        img.onerror = error => reject(error);
-                    };
-                    reader.onerror = error => reject(error);
-                });
-            }
-
-            // Encode extra images
-            const extraBase64: string[] = [];
+            const uploadedMainImage = image ? await uploadProductImage(image) : null;
+            const uploadedExtraImages: string[] = [];
             for (const extraFile of extraImages) {
-                const b64 = await new Promise<string>((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(extraFile);
-                    reader.onload = (ev) => resolve(ev.target?.result as string);
-                    reader.onerror = reject;
-                });
-                extraBase64.push(b64);
+                const uploadedImage = await uploadProductImage(extraFile);
+                uploadedExtraImages.push(uploadedImage.url);
             }
 
             const payload: any = {
@@ -164,11 +132,11 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
                 isPublic,
             };
 
-            if (base64Image) {
-                payload.image = base64Image as string;
+            if (uploadedMainImage) {
+                payload.image = uploadedMainImage.url;
             }
-            if (extraBase64.length > 0) {
-                payload.images = extraBase64;
+            if (product || uploadedExtraImages.length > 0) {
+                payload.images = [...savedExtraImages, ...uploadedExtraImages];
             }
 
             const response = product
@@ -197,6 +165,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
                         setImagePreview(null);
                         setExtraImages([]);
                         setExtraPreviews([]);
+                        setSavedExtraImages([]);
                     }
                     setIsSuccess(false);
                 }, 1500);
@@ -232,11 +201,18 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
                         {/* Main image */}
                         <div className="relative group aspect-[4/3] md:aspect-square mb-3">
-                            <input type="file" id="image" accept="image/*" onChange={(e) => {
-                                if (e.target.files?.[0]) {
-                                    setImage(e.target.files[0]);
-                                    setImagePreview(URL.createObjectURL(e.target.files[0]));
+                            <input type="file" id="image" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => {
+                                const selectedFile = e.target.files?.[0];
+                                if (!selectedFile) return;
+                                const validationError = validateProductImage(selectedFile);
+                                if (validationError) {
+                                    setError(validationError);
+                                    e.target.value = '';
+                                    return;
                                 }
+                                setError(null);
+                                setImage(selectedFile);
+                                setImagePreview(URL.createObjectURL(selectedFile));
                             }} className="hidden" />
 
                             <label htmlFor="image" className="relative flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-black/20 dark:border-white/10 rounded-2xl sm:rounded-[2rem] cursor-pointer group-hover:border-[#E67E22] group-hover:bg-[#E67E22]/5 transition-all overflow-hidden bg-white dark:bg-black/50">
@@ -261,9 +237,22 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
                         {/* Extra photos (max 4 extra = 5 total) */}
                         <div className="mb-4">
                             <p className="text-[9px] font-black uppercase tracking-widest text-black/40 mb-2">
-                                Photos supplémentaires <span className="text-[#E67E22]">{extraImages.length}/4</span> (max 5 en tout)
+                                Photos supplémentaires <span className="text-[#E67E22]">{savedExtraImages.length + extraImages.length}/{maxExtraImages}</span> (max {MAX_PRODUCT_IMAGES} en tout)
                             </p>
                             <div className="grid grid-cols-4 gap-2">
+                                {savedExtraImages.map((src, i) => (
+                                    <div key={src} className="relative aspect-square rounded-xl overflow-hidden border border-black/10">
+                                        <img src={src} alt={`Extra enregistrée ${i + 1}`} className="w-full h-full object-cover" />
+                                        <button
+                                            type="button"
+                                            onClick={() => setSavedExtraImages(prev => prev.filter((_, j) => j !== i))}
+                                            className="absolute top-0.5 right-0.5 size-5 bg-red-500 rounded-full flex items-center justify-center text-white"
+                                            aria-label="Supprimer cette photo"
+                                        >
+                                            <X size={10} />
+                                        </button>
+                                    </div>
+                                ))}
                                 {extraPreviews.map((src, i) => (
                                     <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-black/10">
                                         <img src={src} alt={`Extra ${i+1}`} className="w-full h-full object-cover" />
@@ -279,14 +268,20 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
                                         </button>
                                     </div>
                                 ))}
-                                {extraImages.length < 4 && (
+                                {savedExtraImages.length + extraImages.length < maxExtraImages && (
                                     <label className="aspect-square rounded-xl border-2 border-dashed border-black/15 flex flex-col items-center justify-center cursor-pointer hover:border-[#E67E22] hover:bg-[#E67E22]/5 transition-all">
-                                        <input type="file" accept="image/*" className="hidden" onChange={(e) => {
-                                            if (e.target.files?.[0] && extraImages.length < 4) {
-                                                const f = e.target.files[0];
-                                                setExtraImages(prev => [...prev, f]);
-                                                setExtraPreviews(prev => [...prev, URL.createObjectURL(f)]);
+                                        <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={(e) => {
+                                            const selectedFile = e.target.files?.[0];
+                                            if (!selectedFile) return;
+                                            const validationError = validateProductImage(selectedFile);
+                                            if (validationError) {
+                                                setError(validationError);
+                                                e.target.value = '';
+                                                return;
                                             }
+                                            setError(null);
+                                            setExtraImages(prev => [...prev, selectedFile]);
+                                            setExtraPreviews(prev => [...prev, URL.createObjectURL(selectedFile)]);
                                         }} />
                                         <Plus size={16} className="text-black/30" />
                                     </label>

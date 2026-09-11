@@ -8,6 +8,7 @@ export interface WhatsAppOrderPayload {
   customerPhone: string;
   productName: string;
   productImage?: string;
+  productUrl?: string;
   deliveryAddress: string;
   totalPrice: number;
   language?: string;
@@ -36,6 +37,7 @@ export class WhatsAppService {
   private formatOrderMessage(data: WhatsAppOrderPayload): string {
     const lang = data.language;
     const photoLine = data.productImage ? ` ${t(lang, 'whatsapp.order.photo', { url: data.productImage })}` : '';
+    const productLine = data.productUrl ? ` ${t(lang, 'whatsapp.order.link', { url: data.productUrl })}` : '';
 
     return [
       ` ${t(lang, 'whatsapp.order.header')}`,
@@ -47,6 +49,7 @@ export class WhatsAppService {
       ` ${t(lang, 'whatsapp.order.product', { product: data.productName })}`,
       ` ${t(lang, 'whatsapp.order.total', { total: data.totalPrice.toLocaleString() })}`,
       photoLine,
+      productLine,
       ``,
       `_${t(lang, 'whatsapp.order.cta')}_`,
     ].filter(line => line !== '').join('\n');

@@ -10,7 +10,7 @@ import { FeaturedProductStrip } from "./FeaturedProductStrip";
 import { FeaturedStores } from "./FeaturedStores";
 import { HowItWorks } from "./HowItWorks";
 import { WhyChooseUs } from "./WhyChooseUs";
-import { Testimonials } from "./Testimonials";
+import { MarketplaceJourney } from "./MarketplaceJourney";
 import { Newsletter } from "./Newsletter";
 import { LoginBanner } from "@/components/layout/LoginBanner";
 import { Product, Category } from "@/features/products/types";
@@ -39,6 +39,8 @@ interface HomeViewProps {
     recommendations: boolean;
     bestSellers: boolean;
   };
+  recommendationsRef?: React.RefObject<HTMLDivElement | null>;
+  bestSellersRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -51,6 +53,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
   stores = [],
   howItWorksSteps = [],
   loading,
+  recommendationsRef,
+  bestSellersRef,
 }) => {
   const { selectedProduct, openQuickView, closeQuickView } = useQuickView();
   const { t } = useT();
@@ -182,11 +186,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* POURQUOI NOUS CHOISIR */}
       <WhyChooseUs />
 
-      {/* AVIS CLIENTS */}
-      <Testimonials />
+      {/* PARCOURS D'ACHAT */}
+      <MarketplaceJourney />
 
       {/* NEWSLETTER */}
       <Newsletter />
+
+      {/* Lazy-load sentinels for recommendations & bestSellers */}
+      <div ref={recommendationsRef} className="h-1 w-full" aria-hidden="true" />
+      <div ref={bestSellersRef} className="h-1 w-full" aria-hidden="true" />
 
       {selectedProduct && (
         <ProductQuickView

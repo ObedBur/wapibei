@@ -55,8 +55,9 @@ export const FeaturedStoreCard: React.FC<FeaturedStoreCardProps> = ({
 }) => {
   const { t } = useT();
 
-  const storeScore = store.trustScore ?? 50;
-  const scoreDisplay = (storeScore / 20).toFixed(1);
+  const scoreDisplay = typeof store.trustScore === "number" && Number.isFinite(store.trustScore)
+    ? (store.trustScore / 20).toFixed(1)
+    : null;
 
   const validPreviews = (store.productPreviews || []).filter(
     isValidImageUrl
@@ -69,7 +70,6 @@ export const FeaturedStoreCard: React.FC<FeaturedStoreCardProps> = ({
       : null);
 
   const secondaries = validPreviews.slice(1, 3);
-  const extraProducts = store.productCount !== undefined ? Math.max(0, store.productCount - secondaries.length) : 0;
 
   const safeAvatar =
     store.avatarUrl &&
@@ -176,18 +176,20 @@ export const FeaturedStoreCard: React.FC<FeaturedStoreCardProps> = ({
 
                   {/* SCORE + VENTES — dans une pilule pour lisibilité garantie */}
                   <div className="flex items-center gap-1 mt-1">
-                    <div className="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm rounded-full px-1.5 py-0.5">
-                      <Star
-                        className="size-2.5 text-[#E67E22] fill-current"
-                        strokeWidth={0}
-                      />
-                      <span className="text-[10px] md:text-[11px] font-black text-white leading-none">
-                        {scoreDisplay}
-                      </span>
-                    </div>
+                    {scoreDisplay && (
+                      <div className="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm rounded-full px-1.5 py-0.5">
+                        <Star
+                          className="size-2.5 text-[#E67E22] fill-current"
+                          strokeWidth={0}
+                        />
+                        <span className="text-[10px] md:text-[11px] font-black text-white leading-none">
+                          {scoreDisplay}
+                        </span>
+                      </div>
+                    )}
 
                     {store.salesCount !== undefined && store.salesCount > 0 && (
-                      <div className="inline-flex items-center bg-black/40 backdrop-blur-sm rounded-full px-1.5 py-0.5">
+                      <div className="hidden min-[420px]:inline-flex items-center bg-black/40 backdrop-blur-sm rounded-full px-1.5 py-0.5">
                         <span className="text-[10px] md:text-[11px] font-black text-[#7BC96F] leading-none">
                           {store.salesCount} ventes
                         </span>
@@ -197,9 +199,7 @@ export const FeaturedStoreCard: React.FC<FeaturedStoreCardProps> = ({
                 </div>
               </div>
 
-              {/* =====================================================
-                  MINIATURES : 2 miniatures + +N
-                  ===================================================== */}
+              {/* APERÇUS : deux produits suffisent ; le total est déjà affiché en haut. */}
               {store.productCount !== undefined && store.productCount >= 2 && (
                 <div className="flex items-center gap-2">
 
@@ -220,14 +220,6 @@ export const FeaturedStoreCard: React.FC<FeaturedStoreCardProps> = ({
                     </div>
                   ))}
 
-                  {/* PLUS : N = productCount - nb miniatures affichées */}
-                  {extraProducts > 0 && (
-                    <div className="relative size-10 md:size-11 rounded-xl overflow-hidden shadow-xl ring-2 ring-white/90 bg-black/55 backdrop-blur-sm flex items-center justify-center shrink-0">
-                      <span className="text-[11px] md:text-[12px] font-black text-white">
-                        +{extraProducts}
-                      </span>
-                    </div>
-                  )}
                 </div>
               )}
 

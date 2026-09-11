@@ -1,194 +1,58 @@
-"use client";
+import { Suspense } from "react";
+import { getHomeSections } from "@/features/home/services/home.service";
+import { HomeClient } from "./home-client";
+import { ProductCardSkeleton } from "@/features/products/components/ProductCardSkeleton";
+import { Hero } from "@/features/home/components/Hero";
+import { TrustBar } from "@/features/home/components/TrustBar";
+import { CategoriesGrid } from "@/features/home/components/CategoriesGrid";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
-import { HomeView } from "@/features/home/components/HomeView";
-import {
-  getCategories,
-  getDeals,
-  getNewArrivals,
-  getRecommendations,
-  getBestSellers,
-} from "@/features/products/services/product.service";
-import {
-  getActiveSellers,
-  HomeSeller,
-} from "@/features/home/services/seller.service";
-import {
-  getHomepageContent,
-} from "@/features/home/services/content.service";
-import { Product, Category } from "@/types";
+function HomeLoadingFallback() {
+  return (
+    <main aria-busy="true" aria-label="Chargement de l'accueil" className="flex min-h-screen flex-1 flex-col bg-white dark:bg-black">
+      <Hero slides={[]} />
+      <TrustBar />
+      <CategoriesGrid categories={[]} isLoading />
 
-type HomeSectionKey =
-  | "categories"
-  | "content"
-  | "stores"
-  | "deals"
-  | "newArrivals"
-  | "recommendations"
-  | "bestSellers";
+      <section aria-label="Chargement des produits" className="py-10">
+        <div className="container mx-auto max-w-7xl px-4">
+          <div className="mb-6 flex gap-2 overflow-hidden">
+            {[0, 1, 2].map((item) => (
+              <div key={item} aria-hidden="true" className="h-10 w-32 shrink-0 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
+            ))}
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-3.5 md:grid-cols-4 md:gap-5 lg:grid-cols-5">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
 
-type HomeLoadingState = Record<HomeSectionKey, boolean>;
-
-const HOME_INITIAL_LOADING: HomeLoadingState = {
-  categories: true,
-  content: true,
-  stores: true,
-  deals: true,
-  newArrivals: true,
-  recommendations: true,
-  bestSellers: true,
-};
-
-export default function Home() {
-  const { isAuthenticated, user, isLoading: authLoading } = useAuth();
-  const router = useRouter();
-
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [heroSlides, setHeroSlides] = useState<Awaited<ReturnType<typeof getHomepageContent>>["heroSlides"]>([]);
-  const [stores, setStores] = useState<HomeSeller[]>([]);
-  const [howItWorksSteps, setHowItWorksSteps] = useState<Awaited<ReturnType<typeof getHomepageContent>>["howItWorksSteps"]>([]);
-  const [sectionLoading, setSectionLoading] = useState<HomeLoadingState>(HOME_INITIAL_LOADING);
-
-  const setSectionLoaded = (key: HomeSectionKey) => {
-    setSectionLoading((prev) => ({ ...prev, [key]: false }));
-  };
-
-  // Galeries intelligentes
-  const [deals, setDeals] = useState<Product[]>([]);
-  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
-  const [recommendations, setRecommendations] = useState<Product[]>([]);
-  const [bestSellers, setBestSellers] = useState<Product[]>([]);
-
-  // Redirect ADMIN users away from Home to Admin Dashboard
-  useEffect(() => {
-    if (!authLoading && isAuthenticated && user?.role === "ADMIN") {
-      router.replace("/admin");
-    }
-  }, [authLoading, isAuthenticated, user, router]);
-
-  useEffect(() => {
-    setSectionLoading(HOME_INITIAL_LOADING);
-
-    // Guest-independent sections: fetched once on mount.
-    // The backend already returns productCount per category, so we don't need
-    // to load all products just to compute the badges.
-    void getCategories()
-      .then((response) => {
-        if (response.success) {
-          setCategories(response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-      })
-      .finally(() => setSectionLoaded("categories"));
-
-    void getActiveSellers()
-      .then((response) => {
-        setStores(response);
-      })
-      .catch((error) => {
-        console.error("Error fetching sellers:", error);
-      })
-      .finally(() => setSectionLoaded("stores"));
-
-    void getHomepageContent()
-      .then((response) => {
-        setHeroSlides(response.heroSlides);
-        setHowItWorksSteps(response.howItWorksSteps);
-      })
-      .catch((error) => {
-        console.error("Error fetching homepage content:", error);
-      })
-      .finally(() => setSectionLoaded("content"));
-
-    void getDeals(12)
-      .then((response) => {
-        if (response.success) {
-          setDeals(response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching deals:", error);
-      })
-      .finally(() => setSectionLoaded("deals"));
-
-    void getNewArrivals(12)
-      .then((response) => {
-        if (response.success) {
-          setNewArrivals(response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching new arrivals:", error);
-      })
-      .finally(() => setSectionLoaded("newArrivals"));
-
-    void getBestSellers(12)
-      .then((response) => {
-        if (response.success) {
-          setBestSellers(response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching best sellers:", error);
-      })
-      .finally(() => setSectionLoaded("bestSellers"));
-  }, []);
-
-  // Recommendations are user-specific: fetch them once the auth bootstrap is
-  // done, and only refetch this single section when the user actually changes
-  // (login/logout). This avoids double-fetching every section on first load.
-  useEffect(() => {
-    if (authLoading) return;
-
-    setSectionLoading((prev) => ({ ...prev, recommendations: true }));
-    void getRecommendations(user?.id, 12)
-      .then((response) => {
-        if (response.success) {
-          setRecommendations(response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching recommendations:", error);
-      })
-      .finally(() => setSectionLoaded("recommendations"));
-  }, [authLoading, user?.id]);
-
-  // Don't render Home content for admins to prevent flash
-  if (isAuthenticated && user?.role === "ADMIN") {
-    return null;
-  }
-
-  if (authLoading) {
-    return (
-      <HomeView
-        deals={[]}
-        newArrivals={[]}
-        recommendations={[]}
-        bestSellers={[]}
-        categories={[]}
-        heroSlides={[]}
-        stores={[]}
-        howItWorksSteps={[]}
-        loading={HOME_INITIAL_LOADING}
-      />
-    );
-  }
+async function HomeContent() {
+  const sections = await getHomeSections(12);
 
   return (
-    <HomeView
-      deals={deals}
-      newArrivals={newArrivals}
-      recommendations={recommendations}
-      bestSellers={bestSellers}
-      categories={categories}
-      heroSlides={heroSlides}
-      stores={stores}
-      howItWorksSteps={howItWorksSteps}
-      loading={sectionLoading}
+    <HomeClient
+      initialSections={{
+        categories: sections.categories || [],
+        sellers: sections.sellers || [],
+        heroSlides: sections.content.heroSlides || [],
+        howItWorksSteps: sections.content.howItWorksSteps || [],
+        deals: sections.deals || [],
+        newArrivals: sections.newArrivals || [],
+        bestSellers: sections.bestSellers || [],
+      }}
     />
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<HomeLoadingFallback />}>
+      <HomeContent />
+    </Suspense>
   );
 }

@@ -55,11 +55,18 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({ product, onC
   }, []);
 
   const sellerName = product.user?.boutiqueName || product.user?.fullName || t('product.vendorDefault');
-  const trustScore = product.user?.trustScore || 50;
+  const trustScore = typeof product.user?.trustScore === 'number' && Number.isFinite(product.user.trustScore)
+    ? product.user.trustScore
+    : null;
   const initial = sellerName.charAt(0).toUpperCase();
   const whatsappMessage = t('product.whatsappInterest')
     .replace('{name}', product.name)
     .replace('{price}', String(product.displayPrice || product.price));
+  const publicAppUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+  const productUrl = publicAppUrl
+    ? `${publicAppUrl}/products/${product.id}`
+    : '';
+  const whatsappMessageWithLink = [whatsappMessage, productUrl].filter(Boolean).join('\n');
 
   return (
     <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 md:p-12 overflow-hidden">
@@ -193,12 +200,14 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({ product, onC
                               <Star className="size-4 md:size-5 text-blue-500 fill-current shrink-0" />
                             )}
                           </div>
-                          <div className="flex items-center gap-2 mt-0.5 md:mt-1">
-                            <div className="flex items-center text-[#E67E22] text-[10px] md:text-xs font-black">
-                              <Star className="size-3 md:size-4 mr-1 fill-current" />
-                              {trustScore} {t('product.score')}
+                          {trustScore !== null && (
+                            <div className="mt-0.5 flex items-center gap-2 md:mt-1">
+                              <div className="flex items-center text-[10px] font-black text-[#E67E22] md:text-xs">
+                                <Star className="mr-1 size-3 fill-current md:size-4" />
+                                {trustScore} {t('product.score')}
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -220,7 +229,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({ product, onC
                     </button>
 
                     <a
-                      href={`https://wa.me/${product.user?.phone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`}
+                      href={`https://wa.me/${product.user?.phone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessageWithLink)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 h-12 md:h-14 w-full border-2 border-[#25D366]/40 text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/5 rounded-xl font-black text-[9px] md:text-[11px] uppercase tracking-widest flex items-center justify-center gap-1.5 md:gap-3 transition-all active:scale-95"

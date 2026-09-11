@@ -37,6 +37,7 @@ export const SplashScreen: React.FC = () => {
   const { isAppReady } = useLoading();
   const reduceMotion = useReducedMotion();
   const pathname = usePathname();
+  const isHomePage = pathname === '/';
   // Espace admin = zone de travail : pas d'intro de marque, pas de splash.
   const isAdminArea = pathname?.startsWith('/admin');
 
@@ -55,16 +56,21 @@ export const SplashScreen: React.FC = () => {
     }
   }, []);
 
-  // Safety fallback: always dismiss after MAX_DISPLAY_TIME
-  // Prevents the splash screen from getting stuck if the app never signals ready
   useEffect(() => {
-    if (!shouldRender) return;
-    startTimeRef.current = Date.now();
+    if (shouldRender) {
+      startTimeRef.current = Date.now();
+    }
+  }, [shouldRender]);
+
+  // The home route controls its own handoff once HomeClient mounts. Other
+  // routes keep a safety timeout in case they never emit a ready signal.
+  useEffect(() => {
+    if (!shouldRender || isHomePage) return;
     const fallback = setTimeout(() => {
       setIsVisible(false);
     }, MAX_DISPLAY_TIME);
     return () => clearTimeout(fallback);
-  }, [shouldRender]);
+  }, [isHomePage, shouldRender]);
 
   // Normal logic: hide splash when app is ready AND minimum time has elapsed
   useEffect(() => {

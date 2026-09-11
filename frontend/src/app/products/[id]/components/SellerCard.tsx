@@ -15,6 +15,7 @@ interface SellerCardProps {
   sellerId?: string;
   productName?: string;
   productPrice?: string;
+  productId?: string;
 }
 
 export const SellerCard: React.FC<SellerCardProps> = ({
@@ -27,13 +28,19 @@ export const SellerCard: React.FC<SellerCardProps> = ({
   sellerId,
   productName,
   productPrice,
+  productId,
 }) => {
   const displayName = boutiqueName || fullName || 'Vendeur WapiBei';
   const initial = displayName.charAt(0).toUpperCase();
 
-  const whatsappText = encodeURIComponent(
-    `Bonjour, je suis intéressé par votre produit : *${productName}* au prix de *${productPrice}*.`
-  );
+  const publicAppUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+  const productUrl = publicAppUrl && productId
+    ? `${publicAppUrl}/products/${productId}`
+    : '';
+  const whatsappText = encodeURIComponent([
+    `Bonjour, je suis intéressé par votre produit : *${productName}* au prix de *${productPrice}*.`,
+    productUrl,
+  ].filter(Boolean).join('\n'));
   const whatsappLink = phone
     ? `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${whatsappText}`
     : '#';

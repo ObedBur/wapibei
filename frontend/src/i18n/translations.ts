@@ -300,7 +300,9 @@ export const TRANSLATIONS = {
       outOfStock: 'Épuisé',
       addToCart: 'Ajouter au panier',
       add: 'Ajouter',
+      addToFavorites: 'Ajouter aux favoris',
       quickView: 'Vue rapide',
+      imageUnavailable: 'Image indisponible',
       viewDetails: 'Voir les détails de {name}',
       addedToFavorites: '{name} ajouté aux favoris !',
       removedFromFavorites: '{name} retiré des favoris.',
@@ -1140,6 +1142,7 @@ export const TRANSLATIONS = {
           'Comparez les prix des produits agricoles, high-tech et mode à travers toute l\u2019Afrique. Contactez les vendeurs locaux sans frais.',
         exploreProducts: 'Explorer les produits',
         becomeVendor: 'Devenir vendeur',
+        myVendorSpace: 'Mon espace vendeur',
       },
       homeView: {
         dealsTitle: 'Offres du moment',
@@ -1229,35 +1232,18 @@ export const TRANSLATIONS = {
             "WapiBei est née d'une volonté de valoriser le commerce local. En achetant ici, vous soutenez directement des entrepreneurs et des artisans de votre région, tout en bénéficiant d'une expérience d'achat moderne et sécurisée.",
         },
       },
-      testimonials: {
-        pretitle: 'Témoignages',
-        title: 'Ce que pensent nos',
-        titleHighlight: 'utilisateurs',
+      marketplaceJourney: {
+        pretitle: 'Explorer WapiBei',
+        title: 'Choisissez à votre',
+        titleHighlight: 'rythme',
         description:
-          'Des milliers d\u2019acheteurs et de vendeurs nous font confiance au quotidien.',
-        visitor: 'Visiteur',
-        vendor: 'Vendeur',
-        client: 'Client',
-        success: 'Votre avis a été publié avec succès !',
-        formTitle: 'Laissez votre avis',
-        formDesc: 'Partagez votre expérience avec la communauté WapiBei.',
-        emailPlaceholder: 'Votre adresse email',
-        messagePlaceholder: 'Votre message...',
-        commentAs: 'Commenter en tant que',
-        mock: {
-          t1Role: 'Cliente fidèle',
-          t1Content:
-            "J'ai acheté plusieurs articles sur WapiBei et je suis toujours impressionnée par la qualité du service. La livraison est très rapide et les produits correspondent parfaitement.",
-          t2Role: 'Vendeur certifié',
-          t2Content:
-            "Depuis que j'ai ouvert ma boutique sur cette plateforme, mes ventes ont explosé. Le tableau de bord est intuitif et le support est d'une grande aide.",
-          t3Role: 'Cliente',
-          t3Content:
-            "Une expérience premium du début à la fin. J'adore les alertes de suivi pour mes commandes. Très rassurant et rapide !",
-          t4Role: 'Nouveau client',
-          t4Content:
-            "Première commande et certainement pas la dernière ! L'interface est super propre et j'ai trouvé ce que je cherchais en 2 clics.",
-        },
+          'Parcourez les annonces, comparez les options et échangez avec les vendeurs avant de faire votre choix.',
+        discoverTitle: 'Découvrir',
+        discoverDescription: 'Repérez les produits et les offres qui vous intéressent.',
+        compareTitle: 'Comparer',
+        compareDescription: 'Gardez les prix et les informations utiles sous les yeux.',
+        connectTitle: 'Échanger',
+        connectDescription: 'Posez vos questions à un vendeur avant de poursuivre.',
       },
       newsletter: {
         success: 'Merci ! Vous êtes maintenant inscrit à notre newsletter.',
@@ -1561,7 +1547,9 @@ export const TRANSLATIONS = {
       outOfStock: 'Sold out',
       addToCart: 'Add to cart',
       add: 'Add',
+      addToFavorites: 'Add to favorites',
       quickView: 'Quick view',
+      imageUnavailable: 'Image unavailable',
       viewDetails: 'View details of {name}',
       addedToFavorites: '{name} added to favorites!',
       removedFromFavorites: '{name} removed from favorites.',
@@ -2388,6 +2376,7 @@ export const TRANSLATIONS = {
           'Compare prices of agricultural, high-tech and fashion products across Africa. Contact local sellers for free.',
         exploreProducts: 'Explore products',
         becomeVendor: 'Become a seller',
+        myVendorSpace: 'My seller space',
       },
       homeView: {
         dealsTitle: 'Deals of the moment',
@@ -2477,35 +2466,18 @@ export const TRANSLATIONS = {
             'WapiBei was born from a desire to promote local trade. By shopping here, you directly support entrepreneurs and artisans in your region, while enjoying a modern and secure shopping experience.',
         },
       },
-      testimonials: {
-        pretitle: 'Testimonials',
-        title: 'What our',
-        titleHighlight: 'users',
+      marketplaceJourney: {
+        pretitle: 'Explore WapiBei',
+        title: 'Choose at your own',
+        titleHighlight: 'pace',
         description:
-          'Thousands of buyers and sellers trust us every day.',
-        visitor: 'Visitor',
-        vendor: 'Vendor',
-        client: 'Client',
-        success: 'Your review has been published successfully!',
-        formTitle: 'Leave your review',
-        formDesc: 'Share your experience with the WapiBei community.',
-        emailPlaceholder: 'Your email address',
-        messagePlaceholder: 'Your message...',
-        commentAs: 'Commenting as',
-        mock: {
-          t1Role: 'Loyal customer',
-          t1Content:
-            "I have bought several items on WapiBei and I am always impressed by the quality of the service. Delivery is very fast and the products match perfectly.",
-          t2Role: 'Certified vendor',
-          t2Content:
-            "Since I opened my store on this platform, my sales have exploded. The dashboard is intuitive and the support is a great help.",
-          t3Role: 'Customer',
-          t3Content:
-            "A premium experience from start to finish. I love the tracking alerts for my orders. Very reassuring and fast!",
-          t4Role: 'New customer',
-          t4Content:
-            "First order and certainly not the last! The interface is super clean and I found what I was looking for in 2 clicks.",
-        },
+          'Browse listings, compare options, and connect with sellers before making your choice.',
+        discoverTitle: 'Discover',
+        discoverDescription: 'Find products and offers that catch your interest.',
+        compareTitle: 'Compare',
+        compareDescription: 'Keep prices and useful information in view.',
+        connectTitle: 'Connect',
+        connectDescription: 'Ask a seller your questions before continuing.',
       },
       newsletter: {
         success: 'Thank you! You are now subscribed to our newsletter.',
@@ -2809,7 +2781,9 @@ export const TRANSLATIONS = {
       outOfStock: 'Imeisha',
       addToCart: 'Ongeza kwenye kikapu',
       add: 'Ongeza',
+      addToFavorites: 'Ongeza kwenye vipendwa',
       quickView: 'Mwonekano wa haraka',
+      imageUnavailable: 'Picha haipatikani',
       viewDetails: 'Ona maelezo ya {name}',
       addedToFavorites: '{name} imeongezwa kwenye vipendwa!',
       removedFromFavorites: '{name} imeondolewa kwenye vipendwa.',
@@ -3645,6 +3619,7 @@ export const TRANSLATIONS = {
           'Linganisha bei za bidhaa za kilimo, high-tech na mitindo kote Afrika. Wasiliana na wauzaji wa karibu bila gharama.',
         exploreProducts: 'Gundua bidhaa',
         becomeVendor: 'Kuwa muuzaji',
+        myVendorSpace: 'Nafasi yangu ya muuzaji',
       },
       homeView: {
         dealsTitle: 'Ofa za sasa',
@@ -3734,35 +3709,18 @@ export const TRANSLATIONS = {
             'WapiBei ilizaliwa kutokana na nia ya kukuza biashara za ndani. Kwa kununua hapa, unasaidia moja kwa moja wajasiriamali na mafundi wa eneo lako, huku ukifurahia uzoefu wa kisasa na salama wa ununuzi.',
         },
       },
-      testimonials: {
-        pretitle: 'Ushuhuda',
-        title: 'Wanachofikiria',
-        titleHighlight: 'watumiaji',
+      marketplaceJourney: {
+        pretitle: 'Gundua WapiBei',
+        title: 'Chagua kwa',
+        titleHighlight: 'wakati wako',
         description:
-          'Maelfu ya wanunuzi na wauzaji wanatuamini kila siku.',
-        visitor: 'Mgeni',
-        vendor: 'Muuzaji',
-        client: 'Mteja',
-        success: 'Tathmini yako imechapishwa kwa mafanikio!',
-        formTitle: 'Acha tathmini yako',
-        formDesc: 'Shiriki uzoefu wako na jamii ya WapiBei.',
-        emailPlaceholder: 'Anwani yako ya barua pepe',
-        messagePlaceholder: 'Ujumbe wako...',
-        commentAs: 'Unatoa maoni kama',
-        mock: {
-          t1Role: 'Mteja mwaminifu',
-          t1Content:
-            'Nimenunua vitu kadhaa kwenye WapiBei na siku zote ninavutiwa na ubora wa huduma. Uwasilishaji ni wa haraka sana na bidhaa zinalingana kikamilifu.',
-          t2Role: 'Muuzaji aliyethibitishwa',
-          t2Content:
-            'Tangu nifungue duka langu kwenye jukwaa hili, mauzo yangu yameongezeka sana. Dashibodi ni rahisi na msaada ni wa manufaa makubwa.',
-          t3Role: 'Mteja',
-          t3Content:
-            'Uzoefu wa kipekee tangu mwanzo hadi mwisho. Ninapenda arifa za ufuatiliaji za maagizo yangu. Inatuliza sana na ni ya haraka!',
-          t4Role: 'Mteja mpya',
-          t4Content:
-            'Agizo la kwanza na hakika si la mwisho! Kiolesura ni safi sana na nilikuta nilichokuwa nikitafuta kwa mibofyo 2.',
-        },
+          'Vinjari matangazo, linganisha chaguo na zungumza na wauzaji kabla ya kufanya uamuzi wako.',
+        discoverTitle: 'Gundua',
+        discoverDescription: 'Tafuta bidhaa na ofa zinazokuvutia.',
+        compareTitle: 'Linganisha',
+        compareDescription: 'Weka bei na maelezo muhimu mbele yako.',
+        connectTitle: 'Wasiliana',
+        connectDescription: 'Muulize muuzaji maswali yako kabla ya kuendelea.',
       },
       newsletter: {
         success: 'Asante! Sasa umejiandikisha kwenye jarida letu.',

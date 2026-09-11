@@ -161,6 +161,7 @@ export const TRANSLATIONS: Translations = {
     'whatsapp.order.product': '*Produit :* {product}',
     'whatsapp.order.total': '*Total :* {total} $',
     'whatsapp.order.photo': '*Photo :* {url}',
+    'whatsapp.order.link': '*Voir le produit :* {url}',
     'whatsapp.order.cta': '_Veuillez contacter le client pour confirmer la livraison._',
     'whatsapp.admin': 'ALERTE ADMIN : Nouvelle commande de {customer} ({total} $).',
 
@@ -347,6 +348,7 @@ export const TRANSLATIONS: Translations = {
     'whatsapp.order.product': '*Product :* {product}',
     'whatsapp.order.total': '*Total :* {total} $',
     'whatsapp.order.photo': '*Photo :* {url}',
+    'whatsapp.order.link': '*View product :* {url}',
     'whatsapp.order.cta': '_Please contact the customer to confirm delivery._',
     'whatsapp.admin': 'ADMIN ALERT: New order from {customer} ({total} $).',
 
@@ -533,6 +535,7 @@ export const TRANSLATIONS: Translations = {
     'whatsapp.order.product': '*Bidhaa :* {product}',
     'whatsapp.order.total': '*Jumla :* {total} $',
     'whatsapp.order.photo': '*Picha :* {url}',
+    'whatsapp.order.link': '*Tazama bidhaa :* {url}',
     'whatsapp.order.cta': '_Tafadhali wasiliana na mteja kuthibitisha usafirishaji._',
     'whatsapp.admin': 'TAHADHARI ADMIN: Agizo jipya kutoka {customer} ({total} $).',
 

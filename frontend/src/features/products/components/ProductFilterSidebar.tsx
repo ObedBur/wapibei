@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 import { Category, ProductFilters } from '../types';
 import { useT } from '@/i18n/useT';
 
@@ -16,12 +17,37 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
   const [maxPrice, setMaxPrice] = useState<string>(filters.maxPrice || '');
   const [searchQuery, setSearchQuery] = useState<string>(filters.search || '');
 
-  const handleMinPriceCommit = () => {
-    onUpdate({ minPrice });
+  // Synchronise le state local si l'URL (les filtres globaux) change extérieurement
+  useEffect(() => {
+    setSearchQuery(filters.search || '');
+    setMinPrice(filters.minPrice || '');
+    setMaxPrice(filters.maxPrice || '');
+  }, [filters.search, filters.minPrice, filters.maxPrice]);
+
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    onUpdate({ search: value || null, page: 1 });
+  }, 300);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    debouncedSearch(value);
   };
 
-  const handleMaxPriceCommit = () => {
-    onUpdate({ maxPrice });
+  const debouncedPrice = useDebouncedCallback((min: string, max: string) => {
+    onUpdate({ minPrice: min, maxPrice: max, page: 1 });
+  }, 500);
+
+  const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setMinPrice(val);
+    debouncedPrice(val, maxPrice);
+  };
+
+  const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setMaxPrice(val);
+    debouncedPrice(minPrice, val);
   };
 
   const handleCategoryClick = (categoryId: string | null) => {
@@ -50,9 +76,7 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
                 type="text"
                 placeholder={t('products.sidebar.searchPlaceholder')}
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onBlur={() => onUpdate({ search: searchQuery || null })}
-                onKeyDown={(e) => e.key === 'Enter' && onUpdate({ search: searchQuery || null })}
+                onChange={handleSearchChange}
                 aria-label={t('products.sidebar.searchPlaceholder')}
                 className="w-full pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent"
               />
@@ -121,11 +145,9 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
                 type="number"
                 placeholder="0"
                 value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                onBlur={handleMinPriceCommit}
-                onKeyDown={(e) => e.key === 'Enter' && handleMinPriceCommit()}
+                onChange={handleMinPriceChange}
                 aria-label={t('products.sidebar.min')}
-                className="w-full pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent border-l border-slate-200 dark:border-white/10"
+                className="w-full pl-2.5 pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent border-l border-slate-200 dark:border-white/10"
                 min="0"
               />
             </div>
@@ -138,11 +160,9 @@ export const ProductFilterSidebar: React.FC<SidebarProps> = ({ categories, filte
                 type="number"
                 placeholder="∞"
                 value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                onBlur={handleMaxPriceCommit}
-                onKeyDown={(e) => e.key === 'Enter' && handleMaxPriceCommit()}
+                onChange={handleMaxPriceChange}
                 aria-label={t('products.sidebar.max')}
-                className="w-full pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent border-l border-slate-200 dark:border-white/10"
+                className="w-full pl-2.5 pr-2 py-2.5 text-sm outline-none text-slate-700 dark:text-white bg-transparent border-l border-slate-200 dark:border-white/10"
                 min="0"
               />
             </div>
