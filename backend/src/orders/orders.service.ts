@@ -118,7 +118,23 @@ export class OrdersService {
             vendorId: product.userId,
             status: 'PENDING',
           },
-          include: { product: true, vendor: true },
+          select: {
+            id: true,
+            vendorId: true,
+            customerName: true,
+            customerPhone: true,
+            customerEmail: true,
+            deliveryAddress: true,
+            totalPrice: true,
+            status: true,
+            createdAt: true,
+            product: {
+              select: { id: true, name: true, price: true, city: true },
+            },
+            vendor: {
+              select: { id: true, fullName: true, phone: true, boutiqueName: true },
+            },
+          },
         });
       }),
       ...groupedItems
@@ -379,7 +395,18 @@ export class OrdersService {
     return this.prisma.order.findMany({
       where: { vendorId },
       include: {
-        product: true,
+        product: {
+          select: {
+            id: true,
+            name: true,
+            nameFr: true,
+            nameEn: true,
+            nameSw: true,
+            price: true,
+            image: true,
+            availability: true,
+          },
+        },
         client: { select: { id: true, fullName: true, email: true } }
       },
       orderBy: { createdAt: 'desc' }
@@ -392,7 +419,20 @@ export class OrdersService {
   async findOrdersForClient(clientId: string) {
     return this.prisma.order.findMany({
       where: { clientId },
-      include: { product: true },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            nameFr: true,
+            nameEn: true,
+            nameSw: true,
+            price: true,
+            image: true,
+            availability: true,
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' }
     });
   }

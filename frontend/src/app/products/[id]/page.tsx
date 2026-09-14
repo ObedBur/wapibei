@@ -232,15 +232,23 @@ export default function ProductPage() {
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-4 md:pt-8 pb-40 lg:pb-20"
           >
             {/* ── BREADCRUMB ── */}
-            <nav className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-6 md:mb-10 overflow-x-auto whitespace-nowrap">
-              <Link href="/" className="hover:text-[#E67E22] transition-colors shrink-0">Accueil</Link>
-              <ChevronRight className="size-3 shrink-0" />
-              <Link href="/products" className="hover:text-[#E67E22] transition-colors shrink-0">Produits</Link>
-              <ChevronRight className="size-3 shrink-0" />
-              <span className="text-gray-300 shrink-0">{product.categoryId}</span>
-              <ChevronRight className="size-3 shrink-0" />
-              <span className="text-[#E67E22] truncate max-w-[160px]">{product.name}</span>
-            </nav>
+            <div className="flex items-center gap-3 mb-6 md:mb-10">
+              <Link
+                href="/products"
+                className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all"
+              >
+                <ArrowLeft size={18} />
+              </Link>
+              <nav className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest overflow-x-auto whitespace-nowrap">
+                <Link href="/" className="hover:text-[#E67E22] transition-colors shrink-0">Accueil</Link>
+                <ChevronRight className="size-3 shrink-0" />
+                <Link href="/products" className="hover:text-[#E67E22] transition-colors shrink-0">Produits</Link>
+                <ChevronRight className="size-3 shrink-0" />
+                <span className="text-gray-300 shrink-0">{product.categoryId}</span>
+                <ChevronRight className="size-3 shrink-0" />
+                <span className="text-[#E67E22] truncate max-w-[160px]">{product.name}</span>
+              </nav>
+            </div>
 
             {/* ── HERO GRID ── */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-12 md:mb-20">

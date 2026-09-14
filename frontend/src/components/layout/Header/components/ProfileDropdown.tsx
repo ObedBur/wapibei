@@ -106,7 +106,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       )}
 
       {isAuthenticated && isProfileOpen && (
-        <div className="absolute right-[-12px] xl:right-[-20px] mt-4 w-64 bg-white/95 dark:bg-[#111]/95 backdrop-blur-xl rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 dark:border-white/5 overflow-hidden z-[200] animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute right-0 mt-3 w-64 bg-white/95 dark:bg-[#111]/95 backdrop-blur-xl rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 dark:border-white/5 overflow-hidden z-[200] animate-in fade-in zoom-in-95 duration-200 origin-top-right">
           {/* Body */}
           <div className="p-2.5">
             <div className="mb-1 px-2.5">

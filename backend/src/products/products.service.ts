@@ -22,7 +22,56 @@ const productInclude = {
   },
 };
 
+/**
+ * Sélection allégée pour les sections home (deals, new-arrivals, best-sellers).
+ * Utilise select au lieu d'include pour exclure les champs lourds
+ * (images[], description, nameEn/nameFr/nameSw, descriptionEn/Fr/Sw).
+ */
+const productIncludeHome = {
+  id: true,
+  name: true,
+  nameFr: true,
+  nameEn: true,
+  nameSw: true,
+  price: true,
+  displayPrice: true,
+  image: true,
+  availability: true,
+  market: true,
+  city: true,
+  isOnSale: true,
+  originalPrice: true,
+  totalSales: true,
+  unit: true,
+  createdAt: true,
+  category: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  user: {
+    select: {
+      id: true,
+      boutiqueName: true,
+      city: true,
+      avatarUrl: true,
+    },
+  },
+};
+
 const HOME_PRODUCTS_TTL_MS = 3 * 60 * 1000;
+
+/**
+ * Nettoie les images base64 d'un produit pour réduire la taille de la réponse.
+ * Remplace les data: URI par null (l frontend utilise l'URL stricte si disponible).
+ */
+function sanitizeProductImages(product: any) {
+  if (product.image && product.image.startsWith('data:')) {
+    product.image = null;
+  }
+  return product;
+}
 
 /**
  * Langues supportées par la localisation des produits.
@@ -197,9 +246,9 @@ export class ProductsService {
           } as any,
           orderBy: { createdAt: 'desc' },
           take: limit,
-          include: productInclude,
+          select: productIncludeHome,
         })
-        .then((items) => localizeList(items, resolved));
+        .then((items) => localizeList(items, resolved).map(sanitizeProductImages));
     });
   }
 
@@ -220,9 +269,9 @@ export class ProductsService {
           } as any,
           orderBy: { createdAt: 'desc' },
           take: limit,
-          include: productInclude,
+          select: productIncludeHome,
         })
-        .then((items) => localizeList(items, resolved));
+        .then((items) => localizeList(items, resolved).map(sanitizeProductImages));
     });
   }
 
@@ -237,7 +286,6 @@ export class ProductsService {
 
     return this.cache.getOrSet(cacheKey, HOME_PRODUCTS_TTL_MS, async () => {
       if (userId) {
-        // Trouver les catégories les plus achetées par l'utilisateur
         const userOrders = await this.prisma.order.findMany({
           where: { clientId: userId },
           include: { product: { select: { categoryId: true } } },
@@ -255,20 +303,19 @@ export class ProductsService {
             } as any,
             orderBy: { totalSales: 'desc' },
             take: limit,
-            include: productInclude,
+            select: productIncludeHome,
           });
-          return localizeList(items, resolved);
+          return localizeList(items, resolved).map(sanitizeProductImages);
         }
       }
 
-      // Fallback : produits de vendeurs les mieux notés
       const items = await this.prisma.product.findMany({
         where: { isPublic: true } as any,
         orderBy: { user: { trustScore: 'desc' } },
         take: limit,
-        include: productInclude,
+        select: productIncludeHome,
       });
-      return localizeList(items, resolved);
+      return localizeList(items, resolved).map(sanitizeProductImages);
     });
   }
 
@@ -286,9 +333,9 @@ export class ProductsService {
           } as any,
           orderBy: { totalSales: 'desc' },
           take: limit,
-          include: productInclude,
+          select: productIncludeHome,
         })
-        .then((items) => localizeList(items, resolved));
+        .then((items) => localizeList(items, resolved).map(sanitizeProductImages));
     });
   }
 
@@ -377,7 +424,30 @@ export class ProductsService {
     let items = await this.prisma.product.findMany({
       where,
       ...(searchIds ? {} : { skip, take: limit, orderBy: { createdAt: 'desc' } }),
-      include: { category: true },
+      select: {
+        id: true,
+        name: true,
+        nameFr: true,
+        nameEn: true,
+        nameSw: true,
+        description: true,
+        price: true,
+        displayPrice: true,
+        originalPrice: true,
+        image: true,
+        availability: true,
+        market: true,
+        city: true,
+        isOnSale: true,
+        isPublic: true,
+        totalSales: true,
+        stockQuantity: true,
+        unit: true,
+        categoryId: true,
+        createdAt: true,
+        updatedAt: true,
+        category: { select: { id: true, name: true } },
+      },
     });
 
     if (searchIds) {

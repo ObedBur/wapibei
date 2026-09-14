@@ -66,7 +66,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <article
       className={[
-        'group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-white dark:bg-zinc-900',
+        'group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-white dark:bg-zinc-900 border border-slate-200/70 dark:border-white/[0.08]',
         'shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgb(0,0,0,0.12)]',
         compact ? 'w-[160px] md:w-[190px]' : 'w-full md:w-auto',
         className,
@@ -75,7 +75,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <Link
         href={`/products/${product.id}`}
         aria-label={t('product.viewDetails').replace('{name}', product.name)}
-        className="group block rounded-[1.75rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E67E22]"
+        className="group block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E67E22]"
       >
         <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-white/5 dark:to-white/[0.02]">
           {hasProductImage ? (
@@ -107,8 +107,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           )}
 
-          <div className="absolute inset-x-0 bottom-0 z-10 pb-12">
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 via-[25%] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 z-10 pb-3 md:pb-4">
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 via-[35%] to-transparent" />
             <div className={`relative flex flex-col gap-2 ${compact ? 'px-2.5 pt-2.5 md:px-3 md:pt-3' : 'px-3 pt-3 md:px-4 md:pt-4'}`}>
               <div className="flex items-end justify-between gap-2">
                 <h3 className={`min-w-0 flex-[1.6] font-black leading-tight tracking-tight text-white drop-shadow-sm ${compact ? 'text-[11.5px] line-clamp-2 md:text-[12.5px]' : 'text-[12.5px] line-clamp-2 md:text-[14.5px]'}`}>
@@ -177,20 +177,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={handleAddToCart}
-        disabled={isOutOfStock}
-        className={[
-          `absolute inset-x-3 bottom-3 z-30 flex ${compact ? 'h-8 text-[9.5px] md:h-9' : 'h-9 text-[10.5px] md:h-10 md:text-[11.5px]'} items-center justify-center gap-1.5 rounded-[0.85rem] font-black tracking-wide shadow-md transition-all duration-300 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E67E22] md:rounded-[1rem]`,
-          isOutOfStock
-            ? 'cursor-not-allowed border border-white/15 bg-white/25 text-white/60 backdrop-blur-md'
-            : 'cursor-pointer bg-white text-gray-900 shadow-black/15 hover:-translate-y-[2px] hover:bg-gray-50 hover:shadow-lg hover:shadow-black/18',
-        ].join(' ')}
-      >
-        <ShoppingCart className={`${compact ? 'size-3' : 'size-[13.5px] md:size-[14.5px]'} ${isOutOfStock ? 'text-white/60' : 'text-[#E67E22]'}`} strokeWidth={2.2} />
-        <span>{isOutOfStock ? t('product.outOfStockShort') : t('product.addToCart')}</span>
-      </button>
+      <div className={`shrink-0 bg-white dark:bg-zinc-900 ${compact ? 'px-3 pb-3 pt-3' : 'px-4 pb-4 pt-3'}`}>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={isOutOfStock}
+          className={[
+            `flex w-full ${compact ? 'h-8 text-[9.5px] md:h-9' : 'h-9 text-[10.5px] md:h-10 md:text-[11.5px]'} items-center justify-center gap-1.5 rounded-[0.85rem] font-black tracking-wide shadow-md transition-all duration-300 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E67E22] md:rounded-[1rem]`,
+            isOutOfStock
+              ? 'cursor-not-allowed border border-zinc-200 dark:border-white/10 bg-zinc-100 text-zinc-500 dark:bg-white/5 dark:text-white/40'
+              : 'cursor-pointer bg-zinc-900 text-white shadow-black/15 hover:-translate-y-[2px] hover:bg-zinc-800 hover:shadow-lg hover:shadow-black/20 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-50',
+          ].join(' ')}
+        >
+          <ShoppingCart className={`${compact ? 'size-3' : 'size-[13.5px] md:size-[14.5px]'} ${isOutOfStock ? '' : 'text-[#E67E22]'}`} strokeWidth={2.2} />
+          <span>{isOutOfStock ? t('product.outOfStockShort') : t('product.addToCart')}</span>
+        </button>
+      </div>
     </article>
   );
 };

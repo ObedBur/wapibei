@@ -1,3 +1,8 @@
+'use client';
+
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+
 const legalSections = [
   {
     title: "1. Editeur de la plateforme",
@@ -72,9 +77,17 @@ export default function LegalPage() {
     <main className="bg-white text-slate-950">
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="container mx-auto max-w-5xl px-6 py-16 md:py-20">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.25em] text-[#E67E22]">
-            Informations legales
-          </p>
+          <div className="flex items-center gap-3 mb-4">
+            <Link
+              href="/"
+              className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all"
+            >
+              <ArrowLeft size={18} />
+            </Link>
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-[#E67E22]">
+              Informations legales
+            </p>
+          </div>
           <h1 className="max-w-3xl text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
             Mentions legales, confidentialite et politique des cookies
           </h1>

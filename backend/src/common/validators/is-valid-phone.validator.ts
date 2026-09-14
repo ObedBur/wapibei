@@ -7,16 +7,16 @@ import {
 
 @ValidatorConstraint({ name: 'IsValidPhoneNumber', async: false })
 export class IsValidPhoneNumberConstraint implements ValidatorConstraintInterface {
-  // Formats RDC: +243XXXXXXXXX ou 0XXXXXXXXX
-  private rdPhoneRegex = /^(\+243|0)[0-9]{9}$/;
-
   validate(phone: string): boolean {
     if (!phone) return false;
-    return this.rdPhoneRegex.test(phone);
+    // Strip all spaces, dashes, dots, parentheses
+    const cleaned = phone.replace(/[\s\-.\(\)]/g, '');
+    // Accept: +243XXXXXXXXX (12 chars) or 0XXXXXXXXX (10 chars)
+    return /^\+243[0-9]{9}$/.test(cleaned) || /^0[0-9]{9}$/.test(cleaned);
   }
 
   defaultMessage(): string {
-    return 'Numro invalide. Format: +243XXXXXXXXX ou 0XXXXXXXXX (10 chiffres)';
+    return 'Numéro invalide. Format: +243XXXXXXXXX ou 0XXXXXXXXX (10 chiffres)';
   }
 }
 

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { getActiveSellers, Seller } from '@/features/home/services/seller.service';
 import { FeaturedStoreCard } from '@/features/home/components/FeaturedStoreCard';
@@ -64,7 +65,15 @@ export default function SellersPage() {
     <main className="flex-1 pt-20">
       <section className="py-12 container mx-auto max-w-7xl px-4 animate-in fade-in duration-500">
           <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
-              <span className="text-primary font-bold text-[10px] sm:text-sm uppercase tracking-[0.2em] sm:tracking-wider">{t('sellersPage.partners')}</span>
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Link
+                  href="/"
+                  className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all"
+                >
+                  <ArrowLeft size={18} />
+                </Link>
+                <span className="text-primary font-bold text-[10px] sm:text-sm uppercase tracking-[0.2em] sm:tracking-wider">{t('sellersPage.partners')}</span>
+              </div>
               <h2 className="text-2xl sm:text-5xl font-black text-deep-blue dark:text-white mt-2 mb-3 sm:mb-4 tracking-tighter">{t('sellersPage.title')}</h2>
               <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-lg">
                   {t('sellersPage.subtitle')}

@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useLoading } from '@/context/LoadingContext';
 import { getVendorStats } from '@/features/vendors/services/orders.service';
 import {
     TrendingUp, Users, DollarSign, Package,
     ArrowUpRight, ArrowDownRight, BarChart3,
-    Trophy, Zap, Target
+    Trophy, Zap, Target, ArrowLeft
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { useT } from '@/i18n/useT';
@@ -73,13 +74,21 @@ export default function AnalyticsPage() {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl md:text-5xl font-black text-deep-blue dark:text-white tracking-tighter uppercase italic leading-none">
-                    {t('vendor.analytics.title')} <span className="text-[#E67E22]">{t('vendor.analytics.titleHighlight')}</span>
-                </h1>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mt-2">
-                    {t('vendor.analytics.subtitle')}
-                </p>
+            <div className="flex items-center gap-3">
+                <Link
+                    href="/dashboard"
+                    className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all"
+                >
+                    <ArrowLeft size={18} />
+                </Link>
+                <div>
+                    <h1 className="text-3xl md:text-5xl font-black text-deep-blue dark:text-white tracking-tighter uppercase italic leading-none">
+                        {t('vendor.analytics.title')} <span className="text-[#E67E22]">{t('vendor.analytics.titleHighlight')}</span>
+                    </h1>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mt-2">
+                        {t('vendor.analytics.subtitle')}
+                    </p>
+                </div>
             </div>
 
             {/* Main Stats Grid */}

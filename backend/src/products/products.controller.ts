@@ -65,10 +65,8 @@ export class ProductsController {
 
   /**
    * Récupère les offres promotionnelles.
-   * Cache de 5 minutes pour limiter les requêtes DB sur la page d'accueil.
+   * Cache géré au niveau service via AppCacheService.
    */
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300)
   @Get('deals')
   async getDeals(@Query('limit') limit?: string, @Query('lang') lang?: string) {
     const data = await this.productsService.getDeals(limit ? parseInt(limit) : 6, lang);
@@ -77,9 +75,8 @@ export class ProductsController {
 
   /**
    * Récupère les nouveautés.
+   * Cache géré au niveau service via AppCacheService (pas de CacheInterceptor pour éviter le double-cache).
    */
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300)
   @Get('new-arrivals')
   async getNewArrivals(@Query('limit') limit?: string, @Query('lang') lang?: string) {
     const data = await this.productsService.getNewArrivals(limit ? parseInt(limit) : 6, lang);
@@ -98,9 +95,8 @@ export class ProductsController {
 
   /**
    * Récupère les meilleures ventes.
+   * Cache géré au niveau service via AppCacheService.
    */
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300)
   @Get('best-sellers')
   async getBestSellers(@Query('limit') limit?: string, @Query('lang') lang?: string) {
     const data = await this.productsService.getBestSellers(limit ? parseInt(limit) : 6, lang);

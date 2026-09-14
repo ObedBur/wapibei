@@ -8,11 +8,11 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { 
-  IsValidPhoneNumber,
-  IsValidProvince,
-  IsValidCommune,
-  IsBoutiqueRequiredForVendor,
-  IsStrongPassword
+  IsValidPhoneNumberConstraint,
+  IsValidProvinceConstraint,
+  IsValidCommuneConstraint,
+  IsBoutiqueRequiredForVendorConstraint,
+  IsStrongPasswordConstraint
 } from '../../common/validators';
 import { UserRole } from '@prisma/client';
 
@@ -24,7 +24,7 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  @Validate(IsStrongPassword)
+  @Validate(IsStrongPasswordConstraint)
   password!: string;
 
   @IsString()
@@ -33,17 +33,17 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  @Validate(IsValidPhoneNumber)
+  @Validate(IsValidPhoneNumberConstraint)
   phone!: string;
 
   @IsString()
   @IsNotEmpty()
-  @Validate(IsValidProvince)
+  @Validate(IsValidProvinceConstraint)
   province!: string;
 
   @IsString()
   @IsNotEmpty()
-  @Validate(IsValidCommune)
+  @Validate(IsValidCommuneConstraint)
   commune!: string;
 
   @IsString()
@@ -60,7 +60,7 @@ export class RegisterDto {
 
   @IsString()
   @IsOptional()
-  @Validate(IsBoutiqueRequiredForVendor)
+  @Validate(IsBoutiqueRequiredForVendorConstraint)
   boutiqueName?: string;
   
   @IsEnum(UserRole) 

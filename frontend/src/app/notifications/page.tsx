@@ -11,7 +11,8 @@ import {
   CheckCircle2, 
   Sparkles,
   ChevronRight,
-  MoreVertical
+  MoreVertical,
+  ArrowLeft
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -111,17 +112,25 @@ export default function NotificationsPage() {
         >
           {/* HEADER */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-black/[0.03] dark:border-white/5 pb-10">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-[10px] font-black text-[#A64B2A] uppercase tracking-[0.3em]">
-                <span className="w-8 h-px bg-[#A64B2A]" />
-                {t('notificationsPage.activityCenter')}
+            <div className="flex items-start gap-3">
+              <Link
+                href="/"
+                className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all mt-1"
+              >
+                <ArrowLeft size={18} />
+              </Link>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-[10px] font-black text-[#A64B2A] uppercase tracking-[0.3em]">
+                  <span className="w-8 h-px bg-[#A64B2A]" />
+                  {t('notificationsPage.activityCenter')}
+                </div>
+                <h1 className="text-4xl md:text-6xl font-black text-[#8B4513] dark:text-white tracking-tighter uppercase leading-none">
+                  {t('notificationsPage.title')}
+                </h1>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2">
+                  {t('notificationsPage.unreadPrefix')} <span className="text-black dark:text-white">{unreadCount}</span> {t('notificationsPage.unreadSuffix')}
+                </p>
               </div>
-              <h1 className="text-4xl md:text-6xl font-black text-[#8B4513] dark:text-white tracking-tighter uppercase leading-none">
-                {t('notificationsPage.title')}
-              </h1>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2">
-                {t('notificationsPage.unreadPrefix')} <span className="text-black dark:text-white">{unreadCount}</span> {t('notificationsPage.unreadSuffix')}
-              </p>
             </div>
 
             <Button 

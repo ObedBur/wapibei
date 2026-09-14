@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, Validate } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { IsStrongPassword } from '../../common/validators';
+import { IsStrongPasswordConstraint } from '../../common/validators';
 
 export class ResetPasswordDto {
   @IsEmail()
@@ -14,7 +14,7 @@ export class ResetPasswordDto {
 
   @IsString()
   @IsNotEmpty()
-  @Validate(IsStrongPassword)
+  @Validate(IsStrongPasswordConstraint)
   newPassword!: string;
 }
 

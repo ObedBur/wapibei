@@ -1,15 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AppCacheService } from '../common/services/app-cache.service';
 import { SellerDto } from './dto/seller.dto';
+
+const SELLERS_CACHE_TTL_MS = 5 * 60 * 1000;
 
 @Injectable()
 export class SellersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cache: AppCacheService,
+  ) {}
 
   async findActiveVendors(): Promise<SellerDto[]> {
+    return this.cache.getOrSet('sellers:active', SELLERS_CACHE_TTL_MS, () =>
+      this._fetchActiveVendors(),
+    );
+  }
+
+  private async _fetchActiveVendors(): Promise<SellerDto[]> {
     const vendors = await this.prisma.user.findMany({
       where: { role: 'VENDOR', isVerified: true },
-      include: {
+      select: {
+        id: true,
+        boutiqueName: true,
+        trustScore: true,
+        isVerified: true,
+        avatarUrl: true,
         products: {
           take: 3,
           orderBy: { createdAt: 'desc' },
@@ -37,19 +54,20 @@ export class SellersService {
       salesByVendor[agg.userId] = agg._sum.totalSales ?? 0;
     }
 
-
     return vendors.map((vendor) => ({
       id: vendor.id,
       boutiqueName: vendor.boutiqueName ?? '',
       trustScore: vendor.trustScore,
       isVerified: vendor.isVerified,
-      avatarUrl: vendor.avatarUrl,
+      avatarUrl: vendor.avatarUrl && vendor.avatarUrl.startsWith('http') ? vendor.avatarUrl : null,
       productPreviews: vendor.products.flatMap((p) => {
+        const urls: string[] = [];
         if (p.images && p.images.length > 0) {
-          return p.images;
+          urls.push(...p.images);
         }
-        return p.image ? [p.image] : [];
-      }).slice(0, 3),
+        if (p.image) urls.push(p.image);
+        return urls;
+      }).filter((url) => url && url.startsWith('http')).slice(0, 3),
       productCount: vendor._count.products,
       salesCount: salesByVendor[vendor.id] ?? 0,
       isOnline: false,

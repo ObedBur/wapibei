@@ -1,5 +1,4 @@
-import { Controller, Get, UseInterceptors, Query } from '@nestjs/common';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { Controller, Get, Query } from '@nestjs/common';
 import { CategoriesService } from '../categories/categories.service';
 import { SellersService } from '../sellers/sellers.service';
 import { ContentService } from '../content/content.service';
@@ -16,10 +15,8 @@ export class HomeController {
 
   /**
    * Récupère toutes les sections de la page d'accueil en une seule requête.
-   * Cache 5 minutes (300s) — correspond au TTL le plus court parmi les sections (deals/new-arrivals/best-sellers).
+   * Cache géré au niveau service via AppCacheService (pas de CacheInterceptor).
    */
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300)
   @Get('sections')
   async getHomeSections(
     @Query('limit') limit?: string,

@@ -46,12 +46,30 @@ export const FeaturedProductStrip: React.FC<FeaturedProductStripProps> = ({ titl
             />
           ))}
 
-          {/* Card "Tout voir" plus élégante sur mobile */}
+          {/* Card "Tout voir" avec la même structure que ProductCard (image + body) */}
           <Link
             href="/products"
-            className="w-full flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-white/5 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-[1.75rem] cursor-pointer hover:border-[#E67E22]/50 dark:hover:border-[#E67E22]/50 hover:bg-white dark:hover:bg-white/10 transition-all group lg:hidden aspect-[4/5]"
+            className="w-full flex flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900 cursor-pointer hover:border-[#E67E22]/40 dark:hover:border-[#E67E22]/40 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgb(0,0,0,0.12)] transition-all duration-500 group lg:hidden"
           >
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tight group-hover:text-[#E67E22] dark:group-hover:text-[#E67E22]">{t('home.productStrip.viewAllMobile')}</span>
+            <div className="relative aspect-[4/5] bg-gradient-to-br from-slate-50 to-slate-100 dark:from-white/5 dark:to-white/[0.02] border-b border-slate-100 dark:border-white/[0.05] flex items-center justify-center">
+              <div className="flex flex-col items-center gap-3 text-slate-400 dark:text-slate-500">
+                <svg className="size-8 group-hover:text-[#E67E22] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+                <span className="text-[11px] font-black uppercase tracking-tight text-slate-500 dark:text-slate-400 group-hover:text-[#E67E22] transition-colors px-2 text-center leading-tight">
+                  {t('home.productStrip.viewAllMobile')}
+                </span>
+              </div>
+            </div>
+            <div className="shrink-0 px-4 pb-4 pt-3 bg-white dark:bg-zinc-900">
+              <div className="w-full h-9 md:h-10 rounded-[0.85rem] md:rounded-[1rem] border-2 border-dashed border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:border-[#E67E22]/40 group-hover:text-[#E67E22] transition-all">
+                <svg className="size-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2"/>
+                  <path d="m1 10 22-6"/>
+                </svg>
+                <span className="text-[10.5px] md:text-[11.5px] font-black tracking-wide">Explorer</span>
+              </div>
+            </div>
           </Link>
         </div>
       </div>

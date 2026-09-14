@@ -76,7 +76,7 @@ export const DashboardHeader = () => {
                         </button>
 
                         {/* Notification Dropdown */}
-                        <div className={`absolute right-0 top-[calc(100%+12px)] w-80 transition-all duration-300 transform origin-top-right z-50 ${isNotifOpen ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
+                        <div className={`fixed left-4 right-4 top-[72px] sm:absolute sm:left-auto sm:right-0 sm:top-[calc(100%+12px)] sm:w-80 transition-all duration-300 transform sm:origin-top-right origin-top z-50 ${isNotifOpen ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
                             <div className="bg-white/95 dark:bg-[#111]/95 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col max-h-[400px]">
 
                                 <div className="p-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gradient-to-br from-gray-50 to-white dark:from-white/5 dark:to-transparent shrink-0">

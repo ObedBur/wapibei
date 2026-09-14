@@ -14,6 +14,7 @@ import {
   ArrowRight,
   CheckCircle,
   Package,
+  ArrowLeft,
 } from 'lucide-react';
 import { compareProducts, CompareProduct } from '@/features/compare/compare.service';
 import { getBestSellers } from '@/features/products/services/product.service';
@@ -485,6 +486,17 @@ function CompareContent() {
   return (
     <main className="min-h-screen bg-[#fafafa] dark:bg-black pt-20 sm:pt-24 pb-20 sm:pb-24">
       <div className="container mx-auto px-4 max-w-[1400px]">
+        <div className="flex items-center gap-3 mb-6">
+          <Link
+            href="/products"
+            className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all"
+          >
+            <ArrowLeft size={18} />
+          </Link>
+          <h1 className="text-xl font-black text-deep-blue dark:text-white tracking-tight">
+            {t('compare.heroTitle')}
+          </h1>
+        </div>
         <form
           onSubmit={handleSearchSubmit}
           className="mb-6 flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm dark:border-white/5 dark:bg-[#1a1a1a]"

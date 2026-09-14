@@ -14,6 +14,7 @@ import { api } from "@/lib/axios";
 import { ProductMapper } from "@/features/products/services/product.mapper";
 import { getProductImageUrl } from "@/lib/image-utils";
 import { useT } from "@/i18n/useT";
+import { ArrowLeft } from "lucide-react";
 
 export const CartView: React.FC = () => {
   const { t } = useT();
@@ -34,7 +35,6 @@ export const CartView: React.FC = () => {
 
   const handleCheckoutSubmit = async (data: any) => {
     try {
-      // On envoie une seule requête groupée pour tout le panier
       await api.post("/orders/bulk", {
         items: items.map((item) => ({
           productId: item.product.id,
@@ -47,8 +47,8 @@ export const CartView: React.FC = () => {
       });
 
       setIsCheckoutModalOpen(false);
-      await clearCart();
       router.push("/cart/success");
+      clearCart();
     } catch (error) {
       console.error("Checkout failed:", error);
       showToast(t('cart.checkoutError'), "error");
@@ -96,9 +96,17 @@ export const CartView: React.FC = () => {
           <span className="text-black dark:text-white">{t('cart.order')}</span>
         </div>
 
-        <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#8B4513] dark:text-white tracking-tight md:tracking-tighter leading-none uppercase mb-10 md:mb-16">
-          {t('cart.title')}
-        </h2>
+        <div className="flex items-center gap-3 mb-10 md:mb-16">
+          <Link
+            href="/products"
+            className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all"
+          >
+            <ArrowLeft size={18} />
+          </Link>
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#8B4513] dark:text-white tracking-tight md:tracking-tighter leading-none uppercase">
+            {t('cart.title')}
+          </h2>
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-10 md:gap-16 xl:gap-24">
 

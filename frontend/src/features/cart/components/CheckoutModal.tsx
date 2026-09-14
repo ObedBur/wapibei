@@ -48,11 +48,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     }
   }, [isOpen, user]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const data = Object.fromEntries(formData.entries());
-    onSubmit(data);
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const formData = new FormData(e.target as HTMLFormElement);
+      const data = Object.fromEntries(formData.entries());
+      await onSubmit(data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -162,9 +170,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full min-h-14 h-auto py-4 bg-[#E67E22] hover:bg-orange-600 shadow-lg shadow-orange-500/20 text-white font-bold whitespace-normal text-center"
+                  disabled={isSubmitting}
+                  className="w-full min-h-14 h-auto py-4 bg-[#E67E22] hover:bg-orange-600 shadow-lg shadow-orange-500/20 text-white font-bold whitespace-normal text-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Envoyer la commande • {total.toLocaleString()} {currency}
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Envoi en cours...
+                    </span>
+                  ) : (
+                    `Envoyer la commande • ${total.toLocaleString()} ${currency}`
+                  )}
                 </Button>
               </div>
 

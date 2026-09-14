@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsUUID, Validate } from 'class-validator';
-import { IsValidPhoneNumber } from '../../common/validators/is-valid-phone.validator';
+import { IsValidPhoneNumberConstraint } from '../../common/validators/is-valid-phone.validator';
 
 export class CreateOrderDto {
   @IsUUID()
@@ -10,7 +10,7 @@ export class CreateOrderDto {
   @IsNotEmpty()
   customerName: string;
 
-  @Validate(IsValidPhoneNumber)
+  @Validate(IsValidPhoneNumberConstraint)
   @IsNotEmpty()
   customerPhone: string;
 
