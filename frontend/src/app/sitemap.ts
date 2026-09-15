@@ -7,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://wapibei.cd';
 
   // Static routes
-  const routes = ['', '/products', '/cart', '/sellers', '/compare'].map((route) => ({
+  const routes = ['', '/products', '/cart', '/sellers', '/compare', '/legal', '/privacy', '/terms', '/cookies', '/mentions-legales'].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,

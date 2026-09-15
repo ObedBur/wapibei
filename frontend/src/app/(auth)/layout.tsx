@@ -55,8 +55,8 @@ export default function AuthLayout({
                 {t("auth.footer.privacy")}
               </Link>
               <Link
-                href="/help"
-                className="hover:text-orange-600 font-semibold transition-colors"
+                href="/cookies"
+                className="hover:text-orange-500 transition-colors"
               >
                 {t("auth.footer.help")}
               </Link>
