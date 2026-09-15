@@ -129,7 +129,7 @@ export class OrdersService {
             status: true,
             createdAt: true,
             product: {
-              select: { id: true, name: true, price: true, city: true },
+              select: { id: true, name: true, price: true, city: true, image: true, images: true },
             },
             vendor: {
               select: { id: true, fullName: true, phone: true, boutiqueName: true },

@@ -197,6 +197,21 @@ export class ProductsController {
   }
 
   /**
+   * Réapprovisionne un produit (met à jour le stock et remet IN_STOCK).
+   */
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/restock')
+  async restock(@Param('id') id: string, @Body('stockQuantity') stockQuantity: number, @Req() req: any) {
+    const userId = req.user.id;
+    const product = await this.productsService.restock(id, stockQuantity, userId);
+    return {
+      success: true,
+      message: 'Stock réapprovisionné avec succès',
+      data: product,
+    };
+  }
+
+  /**
    * Publication en masse de plusieurs produits.
    */
   @UseGuards(JwtAuthGuard)

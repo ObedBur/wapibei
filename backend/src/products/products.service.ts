@@ -36,6 +36,7 @@ const productIncludeHome = {
   price: true,
   displayPrice: true,
   image: true,
+  images: true,
   availability: true,
   market: true,
   city: true,
@@ -568,6 +569,36 @@ export class ProductsService {
     if (!product.isPublic && updatedProduct.isPublic) {
       this.notificationsService.broadcastNewProduct(updatedProduct.id);
     }
+
+    return updatedProduct;
+  }
+
+  /**
+   * Réapprovisionne un produit : met à jour le stock et remet la disponibilité à IN_STOCK.
+   */
+  async restock(id: string, stockQuantity: number, userId: string) {
+    const product = await this.findOne(id);
+    if (!product || product.userId !== userId) {
+      throw new BadRequestException({
+        code: 'PRODUCT_RESTOCK_FORBIDDEN',
+        message: 'Produit introuvable ou vous n\'êtes pas autorisé à le réapprovisionner.',
+      });
+    }
+
+    if (!stockQuantity || stockQuantity < 1) {
+      throw new BadRequestException({
+        code: 'INVALID_STOCK_QUANTITY',
+        message: 'La quantité doit être supérieure à 0.',
+      });
+    }
+
+    const updatedProduct = await this.prisma.product.update({
+      where: { id },
+      data: {
+        stockQuantity: Number(stockQuantity),
+        availability: 'IN_STOCK',
+      },
+    });
 
     return updatedProduct;
   }

@@ -5,13 +5,11 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { Injectable } from '@nestjs/common';
 import { LocationService } from '../services/location.service';
 
 @ValidatorConstraint({ name: 'IsValidCommune', async: false })
-@Injectable()
 export class IsValidCommuneConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly locationService: LocationService) {}
+  private readonly locationService = new LocationService();
 
   validate(commune: string, args: ValidationArguments): boolean {
     const province = (args.object as any).province;

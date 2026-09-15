@@ -4,13 +4,11 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Injectable } from '@nestjs/common';
 import { LocationService } from '../services/location.service';
 
 @ValidatorConstraint({ name: 'IsValidProvince', async: false })
-@Injectable()
 export class IsValidProvinceConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly locationService: LocationService) {}
+  private readonly locationService = new LocationService();
 
   validate(province: string): boolean {
     if (!province) return false;
