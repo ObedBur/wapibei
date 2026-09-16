@@ -40,7 +40,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const trustDisplay = typeof trustScore === 'number' && Number.isFinite(trustScore)
     ? (trustScore / 20).toFixed(1)
     : null;
-  const hasProductImage = Boolean(product.image?.trim());
+  const productImageUrl = product.image || product.images?.[0] || null;
+  const hasProductImage = Boolean(productImageUrl?.trim());
 
   const handleToggleFavorite = () => {
     const action = toggleFavorite(product);
@@ -82,7 +83,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Image
               alt={product.name}
               className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
-              src={product.image}
+              src={productImageUrl}
               fill
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />

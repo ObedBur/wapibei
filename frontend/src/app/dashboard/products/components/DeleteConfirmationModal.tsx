@@ -3,6 +3,7 @@
 import React from 'react';
 import { X, AlertTriangle, Loader2, Trash2 } from 'lucide-react';
 import { useT } from '@/i18n/useT';
+import { useModal } from '@/hooks/useModal';
 
 interface DeleteConfirmationModalProps {
     isOpen: boolean;
@@ -20,11 +21,12 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
     isDeleting
 }) => {
     const { t } = useT();
+    const modalRef = useModal(isOpen, onClose);
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="relative bg-white dark:bg-[#0f172a] rounded-[2rem] overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md animate-in zoom-in-95 duration-500">
+            <div ref={modalRef} role="dialog" aria-modal="true" aria-label="Confirmer la suppression" className="relative bg-white dark:bg-[#0f172a] rounded-[1.5rem] overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md animate-in zoom-in-95 duration-500">
 
                 {/* Header */}
                 <div className="p-6 sm:p-8 pb-4 flex flex-col items-center text-center">
@@ -66,6 +68,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                 {/* Close Button UI */}
                 <button
                     onClick={onClose}
+                    aria-label="Fermer"
                     className="absolute top-4 right-4 size-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white transition-all"
                 >
                     <X size={20} />

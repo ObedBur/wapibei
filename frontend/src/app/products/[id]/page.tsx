@@ -256,7 +256,7 @@ export default function ProductPage() {
               {/* LEFT — Gallery */}
               <div className="lg:sticky lg:top-28 lg:self-start">
                 <ProductImageGallery
-                  mainImage={product.image}
+                  mainImage={product.image || product.images?.[0] || '/shopping-cart.png'}
                   images={product.images}
                   productName={product.name}
                   availability={product.availability}

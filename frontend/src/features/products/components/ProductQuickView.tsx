@@ -134,7 +134,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({ product, onC
               {/* Section Gauche : Image */}
               <div className="w-full md:w-1/2 h-48 sm:h-64 md:h-auto md:min-h-[400px] bg-white relative shrink-0 group flex items-center justify-center">
                 <Image
-                  src={product.image}
+                  src={product.image || product.images?.[0] || '/shopping-cart.png'}
                   alt={product.name}
                   className="object-contain p-4 transition-transform duration-700 md:group-hover:scale-105"
                   fill

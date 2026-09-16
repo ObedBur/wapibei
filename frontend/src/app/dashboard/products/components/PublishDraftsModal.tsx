@@ -5,6 +5,7 @@ import { X, Globe, Loader2, CheckCircle2, Package, Search } from 'lucide-react';
 import { useT } from '@/i18n/useT';
 import { api } from '@/lib/axios';
 import { toast } from 'sonner';
+import { useModal } from '@/hooks/useModal';
 
 interface PublishDraftsModalProps {
     isOpen: boolean;
@@ -18,6 +19,7 @@ export default function PublishDraftsModal({ isOpen, onClose, onPublished }: Pub
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
+    const modalRef = useModal(isOpen, onClose);
 
     const fetchDrafts = async () => {
         setIsLoading(true);
@@ -70,7 +72,7 @@ export default function PublishDraftsModal({ isOpen, onClose, onPublished }: Pub
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-[#1e293b]/60 backdrop-blur-sm" onClick={onClose} />
             
-            <div className="relative bg-white dark:bg-[#151b2c] w-full max-w-2xl rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+            <div ref={modalRef} role="dialog" aria-modal="true" aria-label="Publier les brouillons" className="relative bg-white dark:bg-[#151b2c] w-full max-w-2xl rounded-[1.5rem] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
                 {/* Header */}
                 <div className="px-8 py-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -82,7 +84,7 @@ export default function PublishDraftsModal({ isOpen, onClose, onPublished }: Pub
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('vendor.publishDrafts.subtitle')}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="size-10 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-slate-900 hover:bg-red-500 hover:text-white transition-all">
+                    <button onClick={onClose} aria-label="Fermer" className="size-10 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:bg-red-500 hover:text-white transition-all">
                         <X size={20} />
                     </button>
                 </div>
@@ -115,7 +117,7 @@ export default function PublishDraftsModal({ isOpen, onClose, onPublished }: Pub
                                     }`}
                                 >
                                     <div className="size-16 rounded-xl overflow-hidden bg-white shrink-0">
-                                        <img src={product.image} className="w-full h-full object-cover" />
+                                        <img src={product.image || product.images?.[0] || '/shopping-cart.png'} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h4 className="font-extrabold text-[#1e293b] dark:text-white truncate">{product.name}</h4>

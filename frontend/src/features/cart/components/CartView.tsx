@@ -201,10 +201,10 @@ export const CartView: React.FC = () => {
                   <div key={item.product.id} className="grid grid-cols-[88px_1fr] gap-4 sm:grid-cols-[112px_1fr] md:grid-cols-[128px_1fr] md:gap-6 group">
                     <div className="size-22 sm:size-28 md:size-32 rounded-2xl md:rounded-3xl overflow-hidden bg-white dark:bg-black/20 border border-black/5 dark:border-white/5 shrink-0 relative">
                       <Image
-                        src={getProductImageUrl(item.product.image)}
+                        src={getProductImageUrl(item.product.image || item.product.images?.[0])}
                         alt={item.product.name}
                         fill
-                        unoptimized={item.product.image?.includes('unsplash.com') ?? false}
+                        unoptimized={(item.product.image || item.product.images?.[0])?.includes('unsplash.com') ?? false}
                         className="object-cover group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => { (e.target as HTMLImageElement).src = '/shopping-cart.png'; }}
                       />

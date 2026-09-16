@@ -12,6 +12,8 @@ import {
 } from '@/features/products/services/media.service';
 import { toast } from 'sonner';
 import { Category } from '@/types/category.types';
+import { useModal } from '@/hooks/useModal';
+import { EXCHANGE_RATE_USD_TO_FC, type Currency } from '@/constants/exchange';
 
 interface AddProductModalProps {
     isOpen: boolean;
@@ -23,6 +25,7 @@ interface AddProductModalProps {
 
 export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onProductAdded, product, defaultPublic }) => {
     const { t } = useT();
+    const modalRef = useModal(isOpen, onClose);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [nameEn, setNameEn] = useState('');
@@ -188,7 +191,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="relative bg-white dark:bg-black rounded-[2.5rem] overflow-hidden shadow-[0_0_50px_-12px_rgba(0,0,0,0.25)] border border-black/10 dark:border-white/10 w-full max-w-5xl animate-in zoom-in-95 duration-500">
+            <div ref={modalRef} role="dialog" aria-modal="true" aria-label={product ? 'Modifier le produit' : 'Ajouter un produit'} className="relative bg-white dark:bg-black rounded-[1.5rem] overflow-hidden shadow-[0_0_50px_-12px_rgba(0,0,0,0.25)] border border-black/10 dark:border-white/10 w-full max-w-5xl animate-in zoom-in-95 duration-500">
 
                 <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto scrollbar-hide">
 
@@ -299,7 +302,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
 
                     {/* --- RIGHT SIDE: FORM FIELDS --- */}
                     <div className="w-full md:w-7/12 p-8 md:p-12 relative flex flex-col">
-                        <button onClick={onClose} className="absolute top-6 right-6 size-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-black/50 hover:bg-red-500 hover:text-white transition-all z-20">
+                        <button onClick={onClose} aria-label="Fermer" className="absolute top-6 right-6 size-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-black/50 hover:bg-red-500 hover:text-white transition-all z-20">
                             <X size={20} />
                         </button>
 

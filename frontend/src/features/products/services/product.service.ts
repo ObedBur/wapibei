@@ -129,3 +129,13 @@ export async function updateProduct(id: string, payload: any): Promise<ApiRespon
     throw error;
   }
 }
+
+export async function restockProduct(id: string, stockQuantity: number): Promise<ApiResponse<unknown>> {
+  try {
+    const response = await api.patch<ApiResponse<unknown>>(`/products/${id}/restock`, { stockQuantity });
+    return response.data;
+  } catch (error) {
+    console.error(`Error restocking product ${id}:`, error);
+    throw error;
+  }
+}

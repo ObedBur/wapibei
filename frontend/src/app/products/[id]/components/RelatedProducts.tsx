@@ -35,7 +35,7 @@ const RelatedCard: React.FC<{ product: Product }> = ({ product }) => {
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-white/5">
         <Image
-          src={product.image}
+          src={product.image || product.images?.[0] || '/shopping-cart.png'}
           alt={product.name}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"

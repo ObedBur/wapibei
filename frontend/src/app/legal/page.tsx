@@ -1,157 +1,132 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  ArrowLeft,
+  ShieldCheck,
+  FileText,
+  Lock,
+  Cookie,
+  ScrollText,
+} from 'lucide-react';
 
-const legalSections = [
+const pages = [
   {
-    title: "1. Editeur de la plateforme",
-    content: [
-      "La plateforme WapiBei est un service de marketplace permettant aux utilisateurs de consulter des produits, comparer des offres et entrer en relation avec des vendeurs.",
-      "Les informations administratives completes de l'editeur, notamment l'adresse, le numero d'immatriculation et les coordonnees legales, doivent etre completees par l'equipe WapiBei avant publication definitive.",
-    ],
+    href: '/mentions-legales',
+    icon: FileText,
+    color: 'text-[#E67E22]',
+    bg: 'bg-[#E67E22]/10',
+    border: 'border-[#E67E22]/20 hover:border-[#E67E22]/50',
+    title: 'Mentions légales',
+    description: 'Éditeur, rôle de WapiBei, propriété intellectuelle et responsabilités.',
   },
   {
-    title: "2. Role de WapiBei",
-    content: [
-      "WapiBei agit comme intermediaire technique entre les acheteurs, les visiteurs et les vendeurs presents sur la plateforme.",
-      "Les vendeurs restent responsables des informations, prix, disponibilites, images, descriptions et conditions commerciales qu'ils publient.",
-    ],
+    href: '/privacy',
+    icon: Lock,
+    color: 'text-[#2D5A27]',
+    bg: 'bg-[#2D5A27]/10',
+    border: 'border-[#2D5A27]/20 hover:border-[#2D5A27]/50',
+    title: 'Politique de confidentialité',
+    description: 'Collecte, utilisation et protection de vos données personnelles.',
   },
   {
-    title: "3. Donnees personnelles",
-    content: [
-      "WapiBei peut collecter les donnees necessaires a la creation de compte, a l'authentification, a la gestion des commandes, aux notifications et a l'amelioration du service.",
-      "Ces donnees peuvent inclure le nom, l'adresse e-mail, le numero de telephone, le role utilisateur, les preferences de notification et les informations strictement utiles au fonctionnement de la marketplace.",
-      "Chaque utilisateur peut demander l'acces, la rectification ou la suppression de ses donnees personnelles en contactant le service client.",
-    ],
+    href: '/cookies',
+    icon: Cookie,
+    color: 'text-[#E67E22]',
+    bg: 'bg-[#E67E22]/10',
+    border: 'border-[#E67E22]/20 hover:border-[#E67E22]/50',
+    title: 'Politique des cookies',
+    description: 'Cookies utilisés, consentement et gestion de vos préférences.',
   },
   {
-    title: "4. Utilisation des cookies",
-    content: [
-      "WapiBei utilise des cookies et technologies similaires pour assurer le bon fonctionnement du site, securiser les sessions, memoriser certains choix utilisateur et mesurer l'utilisation de la plateforme.",
-      "Le bandeau de consentement enregistre le choix de l'utilisateur dans le navigateur afin d'eviter d'afficher le message a chaque visite.",
-      "Certains cookies techniques peuvent etre indispensables a l'authentification, a la securite ou a l'acces aux espaces reserves.",
-    ],
-  },
-  {
-    title: "5. Cookies techniques et consentement",
-    content: [
-      "Les cookies strictement necessaires au fonctionnement du service peuvent etre utilises sans consentement prealable lorsqu'ils sont indispensables a la fourniture de la plateforme.",
-      "Les cookies utilises pour la mesure d'audience, la personnalisation avancee ou la publicite doivent etre controles selon les choix de l'utilisateur lorsque ces fonctionnalites sont activees.",
-    ],
-  },
-  {
-    title: "6. Securite",
-    content: [
-      "WapiBei met en place des mesures raisonnables pour proteger les comptes, limiter les acces non autorises et securiser les operations sensibles.",
-      "L'utilisateur reste responsable de la confidentialite de ses identifiants et doit signaler toute utilisation suspecte de son compte.",
-    ],
-  },
-  {
-    title: "7. Propriete intellectuelle",
-    content: [
-      "Les textes, interfaces, logos, elements graphiques, contenus de marque et structures de la plateforme WapiBei sont proteges par les regles applicables a la propriete intellectuelle.",
-      "Toute reproduction, modification ou reutilisation non autorisee des elements de la plateforme est interdite.",
-    ],
-  },
-  {
-    title: "8. Responsabilites",
-    content: [
-      "WapiBei s'efforce de maintenir la plateforme accessible et fiable, mais ne peut garantir l'absence permanente d'interruptions, d'erreurs ou d'indisponibilites techniques.",
-      "WapiBei ne peut etre tenu responsable des litiges commerciaux entre un acheteur et un vendeur lorsque les informations ou engagements proviennent directement du vendeur.",
-    ],
-  },
-  {
-    title: "9. Contact",
-    content: [
-      "Pour toute question concernant les mentions legales, les cookies ou les donnees personnelles, vous pouvez contacter le service client WapiBei.",
-      "E-mail support : contact@wapibei.cd",
-      "Telephone : +243 999 123 456",
-    ],
+    href: '/terms',
+    icon: ScrollText,
+    color: 'text-[#E67E22]',
+    bg: 'bg-[#E67E22]/10',
+    border: 'border-[#E67E22]/20 hover:border-[#E67E22]/50',
+    title: 'Conditions d\'utilisation',
+    description: 'Règles d\'utilisation, transactions et résolution des litiges.',
   },
 ];
 
-export default function LegalPage() {
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+export default function LegalHubPage() {
   return (
-    <main className="bg-white text-slate-950">
-      <section className="border-b border-slate-200 bg-slate-50">
-        <div className="container mx-auto max-w-5xl px-6 py-16 md:py-20">
-          <div className="flex items-center gap-3 mb-4">
-            <Link
-              href="/"
-              className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-[#E67E22] hover:text-white transition-all"
-            >
-              <ArrowLeft size={18} />
-            </Link>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-[#E67E22]">
-              Informations legales
-            </p>
-          </div>
-          <h1 className="max-w-3xl text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
-            Mentions legales, confidentialite et politique des cookies
-          </h1>
-          <p className="mt-6 max-w-3xl text-base font-medium leading-8 text-slate-600">
-            Cette page presente les informations principales concernant l'utilisation
-            de WapiBei, la gestion des donnees personnelles, les cookies et les
-            responsabilites liees a la marketplace.
-          </p>
-          <p className="mt-4 text-sm font-bold text-slate-500">
-            Derniere mise a jour : 8 juin 2026
-          </p>
+    <main className="bg-background text-foreground min-h-screen">
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-border">
+        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-[#E67E22] rounded-full blur-[160px] opacity-[0.06] dark:opacity-[0.10] pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-[400px] h-[400px] bg-[#2D5A27] rounded-full blur-[140px] opacity-[0.05] dark:opacity-[0.08] pointer-events-none" />
+        <div className="container mx-auto max-w-4xl px-6 pt-20 pb-14 md:pt-28 md:pb-20 relative z-10">
+          <motion.div initial="hidden" animate="visible" variants={stagger}>
+            <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
+              <Link
+                href="/"
+                className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-card border border-border text-muted-foreground hover:bg-[#E67E22] hover:text-white hover:border-[#E67E22] transition-all"
+              >
+                <ArrowLeft size={18} />
+              </Link>
+              <span className="text-xs font-black uppercase tracking-[0.25em] text-[#E67E22]">
+                Informations légales
+              </span>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="flex items-start gap-4 mb-6">
+              <div className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-[#E67E22]/10 flex items-center justify-center">
+                <ShieldCheck className="w-6 h-6 md:w-7 md:h-7 text-[#E67E22]" strokeWidth={2} />
+              </div>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight">
+                Mentions légales et politique
+              </h1>
+            </motion.div>
+
+            <motion.p variants={fadeUp} className="max-w-2xl text-base font-medium leading-8 text-muted-foreground">
+              Vos droits, nos engagements. Retrouvez toutes les informations légales relatives à l&apos;utilisation de WapiBei.
+            </motion.p>
+          </motion.div>
         </div>
       </section>
 
-      <section className="container mx-auto grid max-w-5xl gap-8 px-6 py-14 lg:grid-cols-[240px_1fr]">
-        <aside className="hidden lg:block">
-          <div className="sticky top-28 space-y-3 border-l-2 border-slate-200 pl-5">
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
-              Sommaire
-            </p>
-            {legalSections.map((section) => (
-              <a
-                key={section.title}
-                href={`#${section.title.split(".")[0]}`}
-                className="block text-sm font-bold text-slate-600 transition-colors hover:text-[#E67E22]"
-              >
-                {section.title}
-              </a>
-            ))}
-          </div>
-        </aside>
-
-        <div className="space-y-10">
-          <div className="rounded-2xl border border-[#E67E22]/20 bg-[#E67E22]/5 p-6">
-            <h2 className="text-lg font-black text-slate-950">Note importante</h2>
-            <p className="mt-3 text-sm font-medium leading-7 text-slate-700">
-              Ce contenu sert de base claire pour le site. Les informations
-              officielles de l'entreprise doivent etre verifiees et completees
-              avant une mise en production publique.
-            </p>
-          </div>
-
-          {legalSections.map((section) => (
-            <article
-              key={section.title}
-              id={section.title.split(".")[0]}
-              className="border-b border-slate-200 pb-10 last:border-b-0"
-            >
-              <h2 className="text-2xl font-black tracking-tight text-slate-950">
-                {section.title}
-              </h2>
-              <div className="mt-5 space-y-4">
-                {section.content.map((paragraph) => (
-                  <p
-                    key={paragraph}
-                    className="text-base font-medium leading-8 text-slate-700"
-                  >
-                    {paragraph}
+      {/* Cards grid */}
+      <section className="container mx-auto max-w-4xl px-6 py-12 md:py-16">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+          className="grid gap-4 md:gap-5 sm:grid-cols-2"
+        >
+          {pages.map((page) => {
+            const Icon = page.icon;
+            return (
+              <motion.div key={page.href} variants={fadeUp}>
+                <Link
+                  href={page.href}
+                  className={`block rounded-2xl border bg-card p-5 md:p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${page.border}`}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${page.bg}`}>
+                      <Icon className={`w-5 h-5 ${page.color}`} strokeWidth={2} />
+                    </span>
+                    <h2 className="text-base font-bold text-foreground">{page.title}</h2>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {page.description}
                   </p>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </section>
     </main>
   );

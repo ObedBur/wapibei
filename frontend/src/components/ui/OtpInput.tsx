@@ -58,7 +58,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({ length = 6, onComplete, erro
   };
 
   return (
-    <div className="flex justify-between gap-3 w-full max-w-sm mx-auto">
+    <div className="flex justify-between gap-1.5 sm:gap-2 md:gap-3 w-full max-w-sm mx-auto">
       {otp.map((digit, index) => (
         <input
           key={index}
@@ -72,7 +72,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({ length = 6, onComplete, erro
           onKeyDown={(e) => handleKeyDown(e, index)}
           onPaste={handlePaste}
           className={`
-            w-12 h-14 md:w-14 md:h-16 text-center text-2xl font-bold rounded-2xl border-2 transition-all duration-300
+            w-9 h-11 sm:w-11 sm:h-12 md:w-14 md:h-16 text-center text-xl sm:text-2xl font-bold rounded-xl sm:rounded-2xl border-2 transition-all duration-300
             focus:outline-none focus:ring-4
             ${error 
               ? 'border-red-500 focus:ring-red-500/10' 
