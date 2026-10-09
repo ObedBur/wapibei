@@ -29,6 +29,7 @@ export const api = axios.create({
   baseURL: API_URL,
   timeout: 60_000,
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true, // Nécessaire pour envoyer/récevoir les cookies HttpOnly
 });
 
 // Access token conservé en mémoire (non persisté) pour éviter les failles XSS
@@ -123,27 +124,20 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const refreshToken = storage.getRefreshToken();
-
-      if (!refreshToken) throw new Error('No refresh token available');
-
+      // Le refresh token est dans le cookie HttpOnly, pas besoin de l'envoyer dans le header
       const response = await axios.post(
         `${API_URL}/auth/refresh`,
         {},
         {
           timeout: 12_000,
-          headers: { Authorization: `Bearer ${refreshToken}` },
+          withCredentials: true, // Envoie le cookie HttpOnly automatiquement
         }
       );
 
-      const { access_token: newAccessToken, refresh_token: newRefreshToken } = response.data;
+      const { access_token: newAccessToken } = response.data;
 
       setAccessToken(newAccessToken);
-
-      // Rotation : persister le nouveau refresh token si le backend en envoie un
-      if (newRefreshToken) {
-        storage.setRefreshToken(newRefreshToken);
-      }
+      // Le nouveau refresh token est dans le cookie HttpOnly (rotation), pas dans la réponse
 
       isRefreshing = false;
       onRefreshed(newAccessToken);
@@ -159,7 +153,6 @@ api.interceptors.response.use(
       onRefreshFailed(refreshError);
 
       setAccessToken(null);
-      storage.removeRefreshToken();
 
       // Rediriger vers /login seulement si pas déjà sur une page auth
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {

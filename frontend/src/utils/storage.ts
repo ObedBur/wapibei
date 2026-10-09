@@ -4,8 +4,6 @@ import {
   type AppLanguage,
 } from '@/i18n/translations';
 
-const REFRESH_TOKEN_KEY = 'wapibei_refresh_token'; // Convention du projet : préfixe wapibei_
-
 type Theme = 'light' | 'dark' | 'system' | 'emerald' | 'ocean';
 type Language = AppLanguage;
 type FontSize = 'small' | 'medium' | 'large';
@@ -41,26 +39,6 @@ const writeLanguageCookie = (name: string, lang: Language): void => {
 };
 
 export const storage = {
-  // Refresh token methods (existing)
-  getRefreshToken: (): string | null => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(REFRESH_TOKEN_KEY);
-    }
-    return null;
-  },
-  
-  setRefreshToken: (token: string): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(REFRESH_TOKEN_KEY, token);
-    }
-  },
-  
-  removeRefreshToken: (): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
-    }
-  },
-
   // Generic methods with type safety and error handling
   getItem<T>(key: string, defaultValue: T): T {
     if (typeof window === 'undefined') return defaultValue;
@@ -131,4 +109,7 @@ export const storage = {
 
   getCurrency: (): Currency => storage.getItem<Currency>('currency', 'USD'),
   setCurrency: (c: Currency) => storage.setItem('currency', c),
+
+  getCity: (): string => storage.getItem<string>('city', 'Kinshasa'),
+  setCity: (city: string) => storage.setItem('city', city),
 };

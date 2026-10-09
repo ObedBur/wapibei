@@ -1,6 +1,5 @@
 import { api, setAccessToken, getAccessToken } from '@/lib/axios';
 import axios from 'axios';
-import { storage } from '@/utils/storage';
 import { LoginDto, RegisterDto, AuthResponse, User, RegisterResponse, VerifyOtpDto, VerifyOtpResponse, ResendOtpDto, ResendOtpResponse, ForgotPasswordDto, ForgotPasswordResponse, ResetPasswordDto, ResetPasswordResponse } from '@/types/auth';
 
 export const authService = {
@@ -17,7 +16,7 @@ export const authService = {
 
   handleAuthResponse(data: AuthResponse) {
     setAccessToken(data.access_token);
-    storage.setRefreshToken(data.refresh_token);
+    // Le refresh token est maintenant dans un cookie HttpOnly, plus dans localStorage
     
     // Ajout d'un cookie de rôle pour le middleware (proxy.ts)
     if (typeof window !== 'undefined') {
@@ -27,13 +26,12 @@ export const authService = {
 
   async logout(): Promise<void> {
     try {
-      const refreshToken = storage.getRefreshToken();
-      await api.post('/auth/logout', { refreshToken });
+      // Le refresh token est dans le cookie HttpOnly, pas besoin de l'envoyer
+      await api.post('/auth/logout');
     } catch (error) {
       console.error('Logout failed', error);
     } finally {
       setAccessToken(null);
-      storage.removeRefreshToken();
       // Supprimer le cookie de rôle
       if (typeof window !== 'undefined') {
         document.cookie = 'wapibei_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
@@ -42,25 +40,18 @@ export const authService = {
   },
 
   async initAuth(): Promise<User | null> {
-    const refreshToken = storage.getRefreshToken();
-    if (!refreshToken) return null;
-
     try {
       const currentToken = getAccessToken();
       
       // Si on n'a pas d'access token (suite à un F5), on rafraîchit MANUELLEMENT 
-      // avant d'appeler /auth/profile. Cela empêche le navigateur d'afficher 
-      // l'erreur rouge "401 Unauthorized" dans la console qui fait peur aux devs.
+      // avant d'appeler /auth/profile. Le cookie HttpOnly sera envoyé automatiquement.
       if (!currentToken) {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4000/api';
         const refreshResponse = await axios.post(`${apiUrl}/auth/refresh`, {}, {
-          headers: { Authorization: `Bearer ${refreshToken}` }
+          withCredentials: true, // Important pour envoyer le cookie HttpOnly
         });
         
         setAccessToken(refreshResponse.data.access_token);
-        if (refreshResponse.data.refresh_token) {
-          storage.setRefreshToken(refreshResponse.data.refresh_token);
-        }
       }
 
       const response = await api.get<{ success: boolean; user: User }>('/auth/profile');
@@ -68,7 +59,6 @@ export const authService = {
     } catch (error) {
       console.error('Failed to init auth session:', error);
       setAccessToken(null);
-      storage.removeRefreshToken();
       if (typeof window !== 'undefined') {
         document.cookie = 'wapibei_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       }
