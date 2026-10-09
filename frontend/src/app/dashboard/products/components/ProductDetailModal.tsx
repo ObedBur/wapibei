@@ -67,9 +67,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                 {/* Image */}
                 <div className="relative w-full aspect-video bg-slate-100 dark:bg-white/5 overflow-hidden">
-                    {product.image || product.images?.[0] ? (
+                    {product.image || (product as { images?: string[] }).images?.[0] ? (
                         <img
-                            src={product.image || product.images?.[0]}
+                            src={product.image || (product as { images?: string[] }).images?.[0]}
                             alt={product.name}
                             className="w-full h-full object-cover"
                         />

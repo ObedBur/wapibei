@@ -71,8 +71,10 @@ export default async function RootLayout({
   return (
     <html lang={lang} className={`scroll-smooth ${outfit.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Material+Symbols+Outlined:wght@400;700&display=swap"
           rel="stylesheet"
         />
         {/* Hide the splash before first paint when it was already shown this session */}

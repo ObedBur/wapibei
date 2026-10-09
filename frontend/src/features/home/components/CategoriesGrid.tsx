@@ -71,7 +71,7 @@ export const CategoriesGrid: React.FC<{ categories: Category[], isLoading?: bool
 
   return (
     <section className="py-8 bg-[#F8F9FA] dark:bg-transparent overflow-hidden">
-      <div className="container mx-auto max-w-7xl px-4 relative">
+      <div className="container mx-auto max-w-[1440px] px-6 lg:px-10 relative">
 
         {/* HEADER : Titre, Boutons et Filtres */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">

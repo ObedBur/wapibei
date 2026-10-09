@@ -139,8 +139,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <CategoriesGrid categories={categories} isLoading={loading.categories} />
 
       {/*  GALERIES INTELLIGENTES */}
-      <section className="py-10">
-        <div className="container mx-auto max-w-7xl px-4">
+      <section className="py-12">
+        <div className="container mx-auto max-w-[1440px] px-6 lg:px-10">
           <ProductTabs 
             deals={deals}
             newArrivals={newArrivals}
@@ -172,7 +172,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/*  MEILLEURES ADRESSES */}
       {(loading.stores || stores?.length > 0) && (
         <div className="py-16 bg-gradient-to-b from-[#E67E22]/5 via-transparent to-[#2D5A27]/5 dark:from-[#E67E22]/10 dark:via-transparent dark:to-[#2D5A27]/10">
-          <div className="container mx-auto max-w-7xl px-4">
+          <div className="container mx-auto max-w-[1440px] px-6 lg:px-10">
             <FeaturedStores stores={loading.stores ? [] : stores} />
           </div>
         </div>
