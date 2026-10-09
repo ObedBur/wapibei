@@ -2,7 +2,9 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft, Search, History } from 'lucide-react';
 import { api } from '@/lib/axios';
+import { useEscape } from '@/hooks/useEscape';
 import { useT } from '@/i18n/useT';
 
 interface SearchBarProps {
@@ -18,6 +20,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({ isSearchExpanded, setIsSea
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const router = useRouter();
+
+  // Échap : ferme d'abord le panneau de suggestions
+  useEscape(showSuggestions, () => setShowSuggestions(false));
 
   useEffect(() => {
     if (isSearchExpanded && searchInputRef.current) {
@@ -64,7 +69,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ isSearchExpanded, setIsSea
     if (e) e.preventDefault();
     const finalQuery = selectedQuery || query;
     if (finalQuery.trim()) {
-      router.push(`/compare?q=${encodeURIComponent(finalQuery.trim())}`);
+      router.push(`/products?q=${encodeURIComponent(finalQuery.trim())}`);
       setIsSearchExpanded(false);
       setShowSuggestions(false);
     }
@@ -83,7 +88,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ isSearchExpanded, setIsSea
           onClick={() => setIsSearchExpanded(false)}
           className="md:hidden mr-2 p-2 text-gray-500 hover:text-primary transition-colors"
         >
-          <span className="material-symbols-outlined">arrow_back</span>
+          <ArrowLeft className="w-6 h-6" strokeWidth={1.75} />
         </button>
       )}
       <form onSubmit={handleSearch} className="relative w-full">
@@ -97,7 +102,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ isSearchExpanded, setIsSea
           className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-full py-2 md:py-2.5 pl-9 md:pl-11 pr-4 text-[13px] md:text-sm focus:ring-2 focus:ring-primary/40 text-deep-blue dark:text-white placeholder-gray-500 transition-all"
         />
         <button type="submit" className="absolute left-2.5 md:left-3.5 top-1.5 md:top-2.5 text-gray-400 hover:text-primary transition-colors">
-          <span className="material-symbols-outlined text-[18px] md:text-[20px] group-focus-within:text-primary">search</span>
+          <Search className="w-[18px] h-[18px] md:w-5 md:h-5 group-focus-within:text-primary" strokeWidth={2} />
         </button>
 
         {/* Suggestions Dropdown */}
@@ -111,7 +116,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ isSearchExpanded, setIsSea
                 className="w-full flex items-center justify-between gap-2 px-5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b last:border-0 border-gray-50 dark:border-white/5 text-left overflow-hidden"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0 pr-2">
-                  <span className="material-symbols-outlined text-gray-400 text-[18px] shrink-0">history</span>
+                  <History className="w-[18px] h-[18px] text-gray-400 shrink-0" strokeWidth={1.75} />
                   <span className="text-[13px] md:text-sm font-medium text-gray-700 dark:text-gray-200 truncate">{s.text}</span>
                 </div>
                 {s.category && (

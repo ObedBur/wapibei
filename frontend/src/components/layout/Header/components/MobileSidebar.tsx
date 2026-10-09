@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -17,11 +17,11 @@ import {
   LogOut,
   User as UserIcon,
   ArrowRight,
-  ChevronRight,
   GripHorizontal,
   type LucideIcon,
 } from 'lucide-react';
 import { useT } from '@/i18n/useT';
+import { useEscape } from '@/hooks/useEscape';
 
 interface NavLink {
   id: string;
@@ -57,10 +57,51 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
   const pathname = usePathname();
   const { t } = useT();
   const [mounted, setMounted] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Échap ferme le drawer
+  useEscape(isOpen, onClose);
+
+  // Focus au remplissage du drawer + piège Tab (boucle first/last)
+  useEffect(() => {
+    if (!isOpen) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+
+    const getFocusable = () =>
+      Array.from(
+        drawer.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+
+    getFocusable()[0]?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const els = getFocusable();
+      if (els.length === 0) return;
+      const first = els[0];
+      const last = els[els.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !drawer.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !drawer.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    drawer.addEventListener('keydown', onKeyDown);
+    return () => drawer.removeEventListener('keydown', onKeyDown);
+  }, [isOpen]);
 
   if (!mounted) return null;
 
@@ -95,6 +136,11 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
 
       {/* Drawer */}
       <div
+        ref={drawerRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('header.menu')}
         className={`absolute right-0 top-0 bottom-0 w-[88vw] max-w-[400px] bg-[#F8FAFC] dark:bg-[#0f172a] shadow-[0_0_60px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) rounded-l-[2.5rem] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
@@ -113,7 +159,7 @@ const MobileSidebarContent: React.FC<MobileSidebarProps> = ({
 
               <button
                 onClick={onClose}
-                aria-label={t('header.menu')}
+                aria-label={t('header.close')}
                 className="size-10 flex items-center justify-center rounded-full bg-[#F1F5F9] dark:bg-white/10 text-[#0F172A] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
               >
                 <X size={20} strokeWidth={2.5} />

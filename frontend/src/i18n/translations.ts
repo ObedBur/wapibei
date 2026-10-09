@@ -18,6 +18,15 @@ export const OPEN_GRAPH_LOCALE_BY_LANGUAGE: Record<AppLanguage, string> = {
 
 export const TRANSLATIONS = {
   fr: {
+    header: {
+      nav: {
+        home: 'Accueil',
+        products: 'Produits',
+        sellers: 'Vendeurs',
+        compare: 'Comparer',
+        allCategories: 'Toutes les catégories',
+      },
+    },
     common: {
       logout: 'Déconnexion',
       settings: 'Paramètres',
@@ -243,12 +252,17 @@ export const TRANSLATIONS = {
         products: 'Produits',
         sellers: 'Vendeurs',
         compare: 'Comparer',
+        allCategories: 'Toutes les catégories',
       },
+      categoriesRecommended: 'Recommandé',
+      categoriesShopByBrand: 'Marques',
       backToHome: "Retour à l'accueil",
       search: 'Rechercher',
       viewCart: 'Voir le panier',
       openMenu: 'Ouvrir le menu mobile',
       menu: 'Menu',
+      close: 'Fermer',
+      unread: 'Non lue',
       login: 'Se connecter',
       loginDesc: 'Accédez à votre compte',
       logout: 'Se déconnecter',
@@ -1263,6 +1277,15 @@ export const TRANSLATIONS = {
     },
   },
   en: {
+    header: {
+      nav: {
+        home: 'Home',
+        products: 'Products',
+        sellers: 'Sellers',
+        compare: 'Compare',
+        allCategories: 'All categories',
+      },
+    },
     common: {
       logout: 'Logout',
       settings: 'Settings',
@@ -1490,12 +1513,17 @@ export const TRANSLATIONS = {
         products: 'Products',
         sellers: 'Sellers',
         compare: 'Compare',
+        allCategories: 'All categories',
       },
+      categoriesRecommended: 'Recommended',
+      categoriesShopByBrand: 'Shop by brand',
       backToHome: 'Back to home',
       search: 'Search',
       viewCart: 'View cart',
       openMenu: 'Open mobile menu',
       menu: 'Menu',
+      close: 'Close',
+      unread: 'Unread',
       login: 'Sign in',
       loginDesc: 'Access your account',
       logout: 'Logout',
@@ -2497,6 +2525,15 @@ export const TRANSLATIONS = {
     },
   },
   sw: {
+    header: {
+      nav: {
+        home: 'Nyumbani',
+        products: 'Bidhaa',
+        sellers: 'Wauzaji',
+        compare: 'Linganisha',
+        allCategories: 'Makundi yote',
+      },
+    },
     common: {
       logout: 'Ondoka',
       settings: 'Mipangilio',
@@ -2724,12 +2761,17 @@ export const TRANSLATIONS = {
         products: 'Bidhaa',
         sellers: 'Wauzaji',
         compare: 'Linganisha',
+        allCategories: 'Kategoria zote',
       },
+      categoriesRecommended: 'Iliyopendekezwa',
+      categoriesShopByBrand: 'Chagua chapa',
       backToHome: 'Rudi nyumbani',
       search: 'Tafuta',
       viewCart: 'Tazama kikapu',
       openMenu: 'Fungua menyu ya simu',
       menu: 'Menyu',
+      close: 'Funga',
+      unread: 'Haijaposwa',
       login: 'Ingia',
       loginDesc: 'Fikia akaunti yako',
       logout: 'Ondoka',

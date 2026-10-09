@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { LogIn } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useT } from "@/i18n/useT";
 
@@ -19,9 +20,7 @@ export const LoginBanner: React.FC = () => {
         <div className="bg-[#ffebdb]/95 dark:bg-slate-900/90 backdrop-blur-md border border-[#E67E22]/30 dark:border-white/10 p-3 rounded-2xl flex items-center gap-4 shadow-2xl animate-in slide-in-from-bottom-10 max-w-sm">
           <div className="flex items-center gap-3 pl-1">
             <div className="size-8 bg-white dark:bg-white/10 rounded-lg flex items-center justify-center shadow-sm shrink-0">
-              <span className="material-symbols-outlined text-[#E67E22] text-xl">
-                login
-              </span>
+              <LogIn className="w-5 h-5 text-[#E67E22]" strokeWidth={1.75} />
             </div>
             <p className="text-[11px] font-black text-slate-800 dark:text-slate-200 leading-tight">
               {t('home.loginBanner.message')}

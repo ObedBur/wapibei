@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ArrowLeft, Search, Bell, ShoppingBag, Menu } from "lucide-react";
 import { SearchBar } from "./components/SearchBar";
 import { MobileSidebar } from "./components/MobileSidebar";
 import { DesktopHeader } from "./components/DesktopHeader";
@@ -34,7 +35,13 @@ const HeaderOverlays = ({
   const { t } = useT();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
   const { unreadCount } = useAppNotifications();
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+    menuBtnRef.current?.focus();
+  };
 
   const navLinks = [
     { id: "/", label: t("header.nav.home"), icon: "home" },
@@ -43,7 +50,6 @@ const HeaderOverlays = ({
     { id: "/compare", label: t("header.nav.compare"), icon: "compare_arrows" },
   ];
 
-  const isActive = (path: string) => pathname === path;
   const isAuthPage = [
     "/login",
     "/register",
@@ -55,7 +61,6 @@ const HeaderOverlays = ({
   return (
     <>
       <DesktopHeader
-        navLinks={navLinks}
         isAuthenticated={isAuthenticated}
         isAuthLoading={isAuthLoading}
         user={user}
@@ -72,9 +77,7 @@ const HeaderOverlays = ({
             className="absolute left-4 p-2 rounded-full bg-[#E67E22]/10 text-[#E67E22] hover:bg-[#E67E22]/20 transition-all border border-[#E67E22]/20"
             title={t("header.backToHome")}
           >
-            <span className="material-symbols-outlined text-[24px]">
-              arrow_back
-            </span>
+            <ArrowLeft className="w-6 h-6" strokeWidth={1.75} />
           </Link>
         )}
 
@@ -104,20 +107,16 @@ const HeaderOverlays = ({
               className="md:hidden p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
               aria-label={t("header.search")}
             >
-              <span className="material-symbols-outlined text-[24px]">
-                search
-              </span>
+              <Search className="w-6 h-6" strokeWidth={1.75} />
             </button>
 
             {isAuthenticated && (
               <Link
                 href="/notifications"
                 className="lg:hidden relative p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                aria-label="Notifications"
+                aria-label={t("header.notifications")}
               >
-                <span className="material-symbols-outlined text-[24px]">
-                  notifications
-                </span>
+                <Bell className="w-6 h-6" strokeWidth={1.75} />
                 {unreadCount > 0 && (
                   <span className="absolute top-1 right-1 size-4 bg-[#E67E22] text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-lg border border-white dark:border-black">
                     {unreadCount > 9 ? '9+' : unreadCount}
@@ -129,11 +128,9 @@ const HeaderOverlays = ({
             <Link
               href="/cart"
               className="lg:hidden relative p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-              aria-label={t("header.viewCart")}
+              aria-label={`${t("header.viewCart")} (${totalItems})`}
             >
-              <span className="material-symbols-outlined text-[24px]">
-                shopping_bag
-              </span>
+              <ShoppingBag className="w-6 h-6" strokeWidth={1.75} />
               {totalItems > 0 && (
                 <span
                   aria-hidden="true"
@@ -145,14 +142,13 @@ const HeaderOverlays = ({
             </Link>
 
             <button
+              ref={menuBtnRef}
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
               aria-label={t("header.openMenu")}
-              aria-expanded={isSidebarOpen ? "true" : "false"}
+              aria-expanded={isSidebarOpen}
             >
-              <span className="material-symbols-outlined text-[24px] md:text-[28px] font-bold">
-                menu
-              </span>
+              <Menu className="w-6 h-6 md:w-7 md:h-7" strokeWidth={2} />
             </button>
           </div>
         )}
@@ -160,7 +156,7 @@ const HeaderOverlays = ({
 
       <MobileSidebar
         isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
+        onClose={closeSidebar}
         navLinks={navLinks}
         isAuthenticated={isAuthenticated}
         isAuthLoading={isAuthLoading}

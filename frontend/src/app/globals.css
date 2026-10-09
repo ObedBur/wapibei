@@ -84,6 +84,18 @@
   --icon-sm: 14px;
   --icon-md: 18px;
   --icon-lg: 24px;
+
+  /* Diced Hero Section Tokens - Wapibei Brand Palette */
+  --diced-hero-section-top-text: #E67E22;
+  --diced-hero-section-main-gradient-from: #E67E22;
+  --diced-hero-section-main-gradient-to: #2D5A27;
+  --diced-hero-section-main-gradient-foreground: #E67E22;
+  --diced-hero-section-separator: #E67E22;
+  --diced-hero-section-sub-text: #4B5563;
+  --diced-hero-section-button-bg: #E67E22;
+  --diced-hero-section-button-fg: #ffffff;
+  --diced-hero-section-button-hover-bg: #2D5A27;
+  --diced-hero-section-button-hover-fg: #ffffff;
 }
  
 .dark, .theme-dark {
@@ -141,6 +153,18 @@
   --color-error-bg: rgba(239, 68, 68, 0.15);
   --color-draft: #94a3b8;
   --color-draft-bg: rgba(148, 163, 184, 0.1);
+
+  /* Diced Hero Section Tokens Dark - Wapibei Brand Palette */
+  --diced-hero-section-top-text: #F39C12;
+  --diced-hero-section-main-gradient-from: #F39C12;
+  --diced-hero-section-main-gradient-to: #48bb78;
+  --diced-hero-section-main-gradient-foreground: #F39C12;
+  --diced-hero-section-separator: #E67E22;
+  --diced-hero-section-sub-text: #D1D5DB;
+  --diced-hero-section-button-bg: #E67E22;
+  --diced-hero-section-button-fg: #ffffff;
+  --diced-hero-section-button-hover-bg: #2D5A27;
+  --diced-hero-section-button-hover-fg: #FFFFFF;
 }
 
 @theme inline {
@@ -427,4 +451,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .group:hover .img-zoom {
   transform: scale(1.07);
+}
+
+/* Focus clavier visible (a11y) — contour orange WapiBei.
+   Limité aux liens/boutons : les inputs gardent leurs styles de focus dédiés. */
+a:focus-visible,
+button:focus-visible,
+[role="dialog"] a:focus-visible,
+[role="dialog"] button:focus-visible {
+  outline: 2px solid #e67e22;
+  outline-offset: 2px;
 }

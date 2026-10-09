@@ -16,10 +16,12 @@ interface SettingsContextType {
     language: Language;
     fontSize: FontSize;
     currency: Currency;
+    city: string;
     setTheme: (theme: Theme) => void;
     setLanguage: (lang: Language) => void;
     setFontSize: (size: FontSize) => void;
     setCurrency: (c: Currency) => void;
+    setCity: (city: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -29,6 +31,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const [language, setLanguageState] = useState<Language>(storage.getLanguage);
     const [fontSize, setFontSizeState] = useState<FontSize>(storage.getFontSize);
     const [currency, setCurrencyState] = useState<Currency>(storage.getCurrency);
+    const [city, setCityState] = useState<string>(storage.getCity);
 
     const setTheme = (newTheme: Theme) => {
         setThemeState(newTheme);
@@ -55,6 +58,11 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const setCurrency = (newCurrency: Currency) => {
         setCurrencyState(newCurrency);
         storage.setCurrency(newCurrency);
+    };
+
+    const setCity = (newCity: string) => {
+        setCityState(newCity);
+        storage.setCity(newCity);
     };
 
     useEffect(() => {
@@ -89,7 +97,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, [language]);
 
     return (
-        <SettingsContext.Provider value={{ theme, language, fontSize, currency, setTheme, setLanguage, setFontSize, setCurrency }}>
+        <SettingsContext.Provider value={{ theme, language, fontSize, currency, city, setTheme, setLanguage, setFontSize, setCurrency, setCity }}>
             {children}
         </SettingsContext.Provider>
     );

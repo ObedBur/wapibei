@@ -3,9 +3,10 @@
 import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { User as UserIcon, ChevronDown, ShieldCheck, LogOut, Package, Heart, Settings, Store } from 'lucide-react';
 import { User } from '@/types/auth';
-import { ChevronDown } from 'lucide-react';
 import { useT } from '@/i18n/useT';
+import { useEscape } from '@/hooks/useEscape';
 
 interface ProfileDropdownProps {
   isAuthenticated: boolean;
@@ -25,6 +26,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   setIsProfileOpen 
 }) => {
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const { t } = useT();
 
   useEffect(() => {
@@ -37,43 +39,50 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [setIsProfileOpen]);
 
+  // Échap : ferme le menu et rend le focus au bouton profil
+  useEscape(isProfileOpen, () => {
+    setIsProfileOpen(false);
+    triggerRef.current?.focus();
+  });
+
   const getInitials = (name: string) => {
     return name?.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) || 'U';
   };
 
-  // Build dynamic navigation based on user role
+  // Liens dynamiques selon rôle
   const getNavItems = () => {
     if (user?.role === 'VENDOR') {
-      // Links specific to Sellers
       return [
-        { label: t('header.dashboard'), href: '/dashboard' },
-        { label: t('header.myAccount'), href: '/settings' }
+        { label: t('header.dashboard'), href: '/dashboard', icon: Store },
+        { label: t('header.myAccount'), href: '/settings', icon: Settings },
       ];
     } 
     
-    // Links specific to Customers (and Admin)
     return [
-      { label: t('header.myAccount'), href: '/settings' },
-      { label: t('header.myOrders'), href: '/settings?tab=orders' },
-      { label: t('header.myFavorites'), href: '/settings?tab=favorites' }
+      { label: t('header.myAccount'), href: '/settings', icon: Settings },
+      { label: t('header.myOrders'), href: '/settings?tab=orders', icon: Package },
+      { label: t('header.myFavorites'), href: '/settings?tab=favorites', icon: Heart },
     ];
   };
 
   const navItems = getNavItems();
 
   return (
-    <div className="relative" ref={profileMenuRef}>
+    <div className="relative shrink-0" ref={profileMenuRef}>
       {isAuthLoading ? (
         <div
-          className="size-10 rounded-full bg-gray-200 dark:bg-white/10 animate-pulse"
+          className="size-9 rounded-full bg-gray-200 dark:bg-white/10 animate-pulse"
           aria-label={t('header.loadingProfile')}
         />
       ) : isAuthenticated ? (
         <button 
+          type="button"
+          ref={triggerRef}
           onClick={() => setIsProfileOpen(!isProfileOpen)}
-          className="group p-0.5 flex items-center gap-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300"
+          aria-expanded={isProfileOpen}
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-gray-300 group cursor-pointer"
         >
-          <div className="size-9 rounded-full bg-[#5E5CE6] flex items-center justify-center text-white text-[11px] font-black shadow-sm group-hover:shadow-md transition-all duration-300 overflow-hidden relative select-none">
+          <div className="size-8 rounded-full bg-[#E67E22] flex items-center justify-center text-white text-[11px] font-black shadow-xs overflow-hidden relative select-none">
             {user?.avatarUrl ? (
               <Image
                 src={user.avatarUrl}
@@ -85,79 +94,92 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
               getInitials(user?.fullName || '')
             )}
           </div>
-          <div className="hidden sm:flex flex-col items-start pr-1">
-            <span className="text-[10px] font-black text-slate-800 dark:text-white uppercase tracking-wider leading-tight">
-              {user?.fullName?.split(' ')[0] || 'OBED'}
+          <div className="flex flex-col text-left leading-none">
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium truncate max-w-[80px]">
+              Bonjour, {user?.fullName?.split(' ')[0] || 'Client'}
             </span>
-            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-tight mt-0.5">
-              {user?.role === 'VENDOR' ? t('header.vendorBadge') : t('header.clientBadge')}
-            </span>
+            <div className="flex items-center gap-1 mt-0.5">
+              <span className="text-[11px] font-black tracking-tight text-gray-900 dark:text-white group-hover:text-[#E67E22] transition-colors">
+                Mon Compte
+              </span>
+              <ChevronDown size={12} className={`text-gray-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} strokeWidth={2} />
+            </div>
           </div>
-          <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
         </button>
       ) : (
         <Link 
           href="/login"
-            className="size-10 flex items-center justify-center text-slate-900 dark:text-gray-400 hover:text-[#4f46e5] hover:bg-blue-50 dark:hover:bg-white/5 rounded-full transition-all duration-300"
-            title={t('header.login')}
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-gray-300 group cursor-pointer"
+          title={t('header.login')}
+          aria-label={t('header.login')}
         >
-            <span className="material-symbols-outlined text-[24px]">account_circle</span>
+          <div className="size-8 rounded-lg bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-800 dark:text-gray-200 group-hover:bg-[#E67E22] group-hover:text-white transition-colors">
+            <UserIcon className="w-4 h-4" strokeWidth={1.75} />
+          </div>
+          <div className="flex flex-col text-left leading-none">
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium truncate">
+              Bienvenue
+            </span>
+            <span className="text-[11px] font-black tracking-tight text-gray-900 dark:text-white group-hover:text-[#E67E22] transition-colors mt-0.5">
+              Se connecter
+            </span>
+          </div>
         </Link>
       )}
 
       {isAuthenticated && isProfileOpen && (
-        <div className="absolute right-0 mt-3 w-64 bg-white/95 dark:bg-[#111]/95 backdrop-blur-xl rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 dark:border-white/5 overflow-hidden z-[200] animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-          {/* Body */}
-          <div className="p-2.5">
-            <div className="mb-1 px-2.5">
-              <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] py-2 block">
+        <div className="absolute right-0 top-full mt-2 w-64 bg-white/95 dark:bg-[#151515] backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+          <div className="p-3">
+            <div className="mb-2 px-2 pb-2 border-b border-gray-100 dark:border-white/5">
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block">
                 {user?.role === 'VENDOR' ? t('header.menuVendor') : t('header.menuPersonal')}
               </span>
+              <p className="text-xs font-bold text-gray-900 dark:text-white truncate mt-0.5">
+                {user?.fullName}
+              </p>
             </div>
 
             <div className="space-y-0.5">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsProfileOpen(false)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-bold text-gray-600 dark:text-gray-300 hover:bg-[#4f46e5]/5 dark:hover:bg-white/5 hover:text-[#4f46e5] transition-all group"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const ItemIcon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsProfileOpen(false)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-[#E67E22]/10 hover:text-[#E67E22] transition-all group"
+                  >
+                    <ItemIcon className="w-4 h-4 text-gray-400 group-hover:text-[#E67E22] transition-colors" strokeWidth={1.75} />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
 
               {user?.role === 'ADMIN' && (
                 <Link
                   href="/admin"
                   onClick={() => setIsProfileOpen(false)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-bold text-gray-600 dark:text-gray-300 hover:bg-[#2D5A27]/5 dark:hover:bg-white/5 hover:text-[#2D5A27] transition-all group"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-[#2D5A27]/10 hover:text-[#2D5A27] transition-all group"
                 >
-                  <span className="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-[#2D5A27] transition-colors">admin_panel_settings</span>
-                  {t('header.admin')}
+                  <ShieldCheck className="w-4 h-4 text-[#2D5A27]" strokeWidth={1.75} />
+                  <span>{t('header.admin')}</span>
                 </Link>
               )}
             </div>
 
-            <div className="h-px bg-gray-100 dark:bg-white/5 my-2 mx-2"></div>
+            <div className="h-px bg-gray-100 dark:bg-white/5 my-2"></div>
 
             <button
+              type="button"
               onClick={onLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all group"
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all group cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">logout</span>
-              {t('header.logout')}
+              <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" strokeWidth={1.75} />
+              <span>{t('header.logout')}</span>
             </button>
-          </div>
-
-          {/* Footer/Badge */}
-          <div className="p-3 bg-gray-50/50 dark:bg-white/5 text-center">
-            <p className="text-[9px] font-black text-[#2D5A27] uppercase tracking-widest">{t('header.exclusive')}</p>
           </div>
         </div>
       )}
     </div>
   );
 };
-
-
