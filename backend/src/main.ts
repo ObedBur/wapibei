@@ -30,6 +30,7 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import helmet from '@fastify/helmet';
+import cookie from '@fastify/cookie';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 // 
@@ -42,6 +43,12 @@ async function bootstrap() {
       bodyLimit: 50 * 1024 * 1024,
     })
   );
+
+  // ============ COOKIE PARSER ============
+  await app.register(cookie, {
+    secret: process.env.COOKIE_SECRET || 'wapibei_cookie_secret_change_in_prod',
+    parseOptions: {},
+  });
 
   // ============ PREFIXE GLOBAL ============
   // ============ PREFIXE GLOBAL ============

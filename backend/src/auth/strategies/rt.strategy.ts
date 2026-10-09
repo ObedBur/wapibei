@@ -17,22 +17,15 @@ function getRefreshSecret(): string {
 export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: (req: FastifyRequest) => req.cookies?.['wapibei_rt'],
       secretOrKey: getRefreshSecret(),
-      passReqToCallback: true, // Gardé à true pour récupérer le token brut
+      passReqToCallback: true,
     });
   }
 
-  /**
-   * Version Fastify de la validation
-   */
   validate(req: FastifyRequest, payload: JwtPayload): RefreshTokenPayload | null {
-    // Dans Fastify, on n'utilise pas .get('authorization') mais .headers
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) return null;
-
-    const refreshToken = authHeader.replace('Bearer', '').trim();
+    const refreshToken = req.cookies?.['wapibei_rt'];
+    if (!refreshToken) return null;
 
     return {
       ...payload,

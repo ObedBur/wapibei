@@ -78,10 +78,8 @@ export class TokenService {
    */
   async revokeRefreshToken(userId: string, token: string): Promise<boolean> {
     if (!token) {
-      throw new HttpException(
-        'Refresh token is required',
-        HttpStatus.BAD_REQUEST
-      );
+      this.logger.debug(`No refresh token provided for revocation, user ${userId}`);
+      return false;
     }
 
     const tokenHash = this.hashToken(token);

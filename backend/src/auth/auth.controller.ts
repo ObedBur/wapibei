@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Get, Delete, Patch, Put } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Get, Delete, Patch, Put, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -7,10 +7,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RtGuard } from './guards/rt-auth.guard';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { UseGuards, Req } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { AuthThrottlerGuard } from './guards/auth-throttler.guard';
 import type { JwtRequest, RefreshRequest } from './types/auth-request.types';
 import { UpdateNotificationPreferencesDto } from './dto/update-notification-preferences.dto';
+import { FastifyReply } from 'fastify';
 
 @Controller('auth')
 export class AuthController {
@@ -27,8 +28,14 @@ export class AuthController {
   @UseGuards(AuthThrottlerGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ) {
+    const result = await this.authService.login(loginDto);
+    this.setRefreshTokenCookie(res, result.refresh_token);
+    const { refresh_token, ...rest } = result;
+    return rest;
   }
 
   @UseGuards(AuthThrottlerGuard)
@@ -64,29 +71,43 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(
+  async logout(
     @Req() req: JwtRequest,
-    @Body('refreshToken') refreshToken: string,
+    @Res({ passthrough: true }) res: FastifyReply,
   ) {
     const userId = req.user.id;
-    return this.authService.logout(userId, refreshToken);
+    const refreshToken = req.cookies?.['wapibei_rt'];
+    await this.authService.logout(userId, refreshToken);
+    this.clearRefreshTokenCookie(res);
+    return { success: true, message: 'Logged out successfully' };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout-all')
   @HttpCode(HttpStatus.OK)
-  logoutAll(@Req() req: JwtRequest) {
+  async logoutAll(
+    @Req() req: JwtRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ) {
     const userId = req.user.id;
-    return this.authService.logoutAll(userId);
+    await this.authService.logoutAll(userId);
+    this.clearRefreshTokenCookie(res);
+    return { success: true, message: 'All sessions logged out' };
   }
 
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refreshTokens(@Req() req: RefreshRequest) {
+  async refreshTokens(
+    @Req() req: RefreshRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ) {
     const userId = req.user.sub;
-    const refreshToken = req.user.refreshToken;
-    return this.authService.refreshTokens(userId, refreshToken);
+    const refreshToken = req.cookies?.['wapibei_rt'];
+    const result = await this.authService.refreshTokens(userId, refreshToken);
+    this.setRefreshTokenCookie(res, result.refresh_token);
+    const { refresh_token, ...rest } = result;
+    return rest;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -164,6 +185,23 @@ export class AuthController {
       message: 'Test users cleared',
       timestamp: new Date().toISOString(),
     };
+  }
+
+  private setRefreshTokenCookie(res: FastifyReply, token: string) {
+    const isProd = process.env.NODE_ENV === 'production';
+    res.setCookie('wapibei_rt', token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/api/auth',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+  }
+
+  private clearRefreshTokenCookie(res: FastifyReply) {
+    res.clearCookie('wapibei_rt', {
+      path: '/api/auth',
+    });
   }
 }
 

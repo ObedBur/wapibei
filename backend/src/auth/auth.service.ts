@@ -159,7 +159,8 @@ export class AuthService {
 
     return {
       success: true,
-      ...tokens,
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
       user: {
         id: user.id,
         email: user.email,
@@ -264,8 +265,8 @@ export class AuthService {
 
   // ========================= LOGOUT =========================
 
-  async logout(userId: string, refreshToken: string) {
-    const revoked = await this.tokenService.revokeRefreshToken(userId, refreshToken);
+  async logout(userId: string, refreshToken?: string) {
+    const revoked = await this.tokenService.revokeRefreshToken(userId, refreshToken || '');
 
     return {
       success: true,
@@ -281,7 +282,12 @@ export class AuthService {
   // ========================= REFRESH =========================
 
   async refreshTokens(userId: string, refreshToken: string) {
-    return this.tokenService.refreshTokenPair(userId, refreshToken);
+    const tokens = await this.tokenService.refreshTokenPair(userId, refreshToken);
+    return {
+      success: true,
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+    };
   }
 
   // ========================= UTILITY =========================
